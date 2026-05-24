@@ -444,6 +444,91 @@
     .login-title { font-size: 14px; font-weight: 800; color: #1a1a1a; }
     .login-sub { font-size: 11px; font-weight: 600; color: #aaa; margin-top: 1px; }
     .login-arrow { font-size: 18px; color: #bbb; font-weight: 700; }
+    /* MOBILE FIX */
+@media (max-width: 900px) {
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .page-body {
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 16px 12px 0;
+  }
+
+  .wheel-container {
+    width: 320px;
+    height: 160px;
+  }
+
+  canvas#wheel {
+    width: 320px;
+    height: 320px;
+  }
+
+  .wheel-area img {
+    height: 80px !important;
+  }
+
+  .side-panel,
+  .prizes-panel {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .spin-bar {
+    padding: 14px;
+  }
+
+  .items-bar {
+    padding: 12px 10px;
+  }
+
+  .item-chip {
+    min-width: 68px;
+    padding: 8px 10px;
+  }
+
+  .item-chip img {
+    width: 42px;
+    height: 42px;
+  }
+
+  .item-chip span {
+    font-size: 10px;
+  }
+
+  header {
+    padding: 0 12px;
+    height: 56px;
+  }
+
+  .header-nav {
+    display: none;
+  }
+
+  .header-logo img {
+    height: 28px;
+  }
+
+  footer {
+    padding: 28px 18px 20px;
+  }
+
+  .footer-top {
+    gap: 28px;
+  }
+
+  .popup-box {
+    padding: 24px 18px;
+  }
+
+  .popup-img {
+    width: 140px;
+  }
+}
   </style>
 </head>
 <body>
