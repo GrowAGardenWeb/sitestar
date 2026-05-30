@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Robux</title>
+<style>
+:root{
+  --surface-0:#121215;--surface-100:#191a1f;--surface-200:#202227;--surface-300:#272930;
+  --shift-300:rgba(208,217,251,.12);--shift-400:rgba(208,217,251,.16);
+  --content-emphasis:#f7f7f8;--content-muted:#bcbec8;
+  --stroke-default:rgba(208,217,251,.12);--stroke-emphasis:rgba(208,217,251,.16);
+  --state-hover:rgba(208,217,251,.08);--state-press:rgba(208,217,251,.12);
+  --blue-700:#335fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Builder Sans','Builder Extended',system-ui,-apple-system,sans-serif;background:var(--surface-0);min-height:100vh;color:var(--content-emphasis);-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(208,217,251,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+
+/* TOPBAR */
+.topbar-frame{position:fixed;top:12px;right:16px;z-index:10;background:var(--surface-100);border-radius:9999px;padding:8px 16px;display:flex;align-items:center;gap:16px}
+.bal{display:flex;align-items:center;gap:6px}
+.bal img{width:24px;height:24px;object-fit:contain;flex-shrink:0}
+.bal-num{font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:20px;font-weight:700;color:var(--content-emphasis);letter-spacing:-0.3px;line-height:1}
+.sendbtn{position:relative;background:var(--shift-300);border:none;border-radius:8px;height:32px;padding:0 12px 0 10px;color:var(--content-emphasis);font-family:'Builder Sans',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;overflow:hidden}
+.sendbtn::before{content:'';position:absolute;inset:0;background:transparent;transition:background .1s;border-radius:inherit}
+.sendbtn:hover::before{background:var(--state-hover)}
+.sendbtn svg,.sendbtn span{position:relative;z-index:1}
+
+/* PAGE */
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:80px 24px 64px}
+.hero{text-align:center;font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:56px;font-weight:700;line-height:110%;letter-spacing:-0.56px;color:var(--content-emphasis);margin:0 0 40px}
+.section-frame{background:var(--surface-100);border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.blabel{font-family:'Builder Sans',system-ui,sans-serif;font-size:16px;font-weight:700;color:var(--content-emphasis)}
+.banner{border-radius:10px;overflow:hidden;position:relative;height:96px;background:var(--surface-200);border:1px solid var(--stroke-default);display:flex;align-items:center}
+.banner-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 28%;opacity:0.44}
+.banner-inner{position:relative;z-index:1;display:flex;align-items:center;gap:12px;padding:0 18px}
+.thumb-wrap{position:relative;flex-shrink:0}
+.thumb-wrap img{width:58px;height:58px;border-radius:10px;border:none;object-fit:cover;display:block}
+.plus1{position:absolute;bottom:-3px;right:-4px;background:#1d4ed8;color:#fff;font-size:10px;font-weight:700;border-radius:4px;padding:0 5px;line-height:17px;font-family:'Builder Sans',system-ui,sans-serif}
+.bname{font-family:'Builder Sans',system-ui,sans-serif;font-size:15px;font-weight:700;color:var(--content-emphasis);display:flex;align-items:center;gap:5px}
+.iinfo{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--content-muted);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:var(--content-muted);cursor:help;font-weight:700;flex-shrink:0}
+.bsub{font-family:'Builder Sans',system-ui,sans-serif;font-size:13px;color:var(--content-muted);font-weight:500;margin-top:3px}
+.pkgs{display:flex;flex-direction:column;gap:5px}
+.pkg{background:var(--surface-200);border:1px solid var(--stroke-default);border-radius:10px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;position:relative;overflow:hidden}
+.pkg::before{content:'';position:absolute;inset:0;background:transparent;transition:background .1s}
+.pkg:hover::before{background:var(--state-hover)}
+.pleft{display:flex;align-items:center;gap:9px;flex-wrap:wrap;position:relative;z-index:1}
+.pamount{font-family:'Builder Sans',system-ui,sans-serif;font-size:22px;font-weight:700;color:var(--content-emphasis);display:flex;align-items:center;gap:7px;letter-spacing:-0.3px}
+.pamount img{width:22px;height:22px;object-fit:contain;flex-shrink:0}
+.porig{font-family:'Builder Sans',system-ui,sans-serif;font-size:14px;font-weight:500;color:var(--content-muted);text-decoration:line-through;display:flex;align-items:center;gap:4px}
+.porig img{width:14px;height:14px;object-fit:contain;opacity:0.45}
+.pills{display:flex;align-items:center;gap:6px}
+.pill{background:var(--shift-300);color:var(--content-muted);font-family:'Builder Sans',system-ui,sans-serif;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.pill-foryou{background:transparent;color:var(--content-muted);border:1px solid var(--stroke-emphasis);font-family:'Builder Sans',system-ui,sans-serif;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.pill-foryou img{width:13px;height:13px;object-fit:contain;opacity:0.6}
+.buybtn{position:relative;z-index:1;background:var(--shift-300);color:var(--content-emphasis);border:none;border-radius:8px;padding:11px 22px;font-family:'Builder Sans',system-ui,sans-serif;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;min-width:130px;text-align:center;overflow:hidden}
+.buybtn::before{content:'';position:absolute;inset:0;background:transparent;transition:background .1s;border-radius:inherit}
+.buybtn:hover::before{background:var(--state-hover)}
+.buybtn span{position:relative;z-index:1}
+.buybtn-blue{background:var(--blue-700)}
+.buybtn-blue:hover::before{background:rgba(255,255,255,.08)}
+.sec2-title{font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:22px;font-weight:700;color:var(--content-emphasis);letter-spacing:-0.3px}
+.sec2-sub{font-family:'Builder Sans',system-ui,sans-serif;font-size:13px;color:var(--content-muted);font-weight:400;margin-top:2px;margin-bottom:4px}
+
+/* OVERLAY */
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(10,10,14,.78);display:none;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+
+/* MODAL */
+.modal{background:var(--surface-100);border-radius:16px;width:100%;max-width:460px;margin:16px;overflow:hidden;display:flex;flex-direction:column}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px}
+.modal-title{display:flex;align-items:center;gap:10px;font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:20px;font-weight:700;color:var(--content-emphasis);letter-spacing:-0.3px}
+.modal-title img{width:22px;height:22px;object-fit:contain}
+.modal-right{display:flex;align-items:center;gap:14px}
+.modal-bal-num{display:flex;align-items:center;gap:6px;font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:16px;font-weight:700;color:var(--content-emphasis)}
+.modal-bal-num img{width:18px;height:18px;object-fit:contain}
+.close-btn{background:none;border:none;cursor:pointer;color:var(--content-muted);padding:4px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:background .1s}
+.close-btn:hover{background:var(--shift-300)}
+
+/* screen transitions */
+.screen{display:none;flex-direction:column}
+.screen.active{display:flex}
+
+/* SEARCH */
+.modal-search{padding:0 24px 16px}
+.search-input{width:100%;background:var(--surface-200);border:1.5px solid var(--stroke-default);border-radius:10px;padding:13px 16px;color:var(--content-emphasis);font-family:'Builder Sans',system-ui,sans-serif;font-size:15px;font-weight:400;outline:none;transition:border-color .15s}
+.search-input::placeholder{color:var(--content-muted)}
+.search-input:focus{border-color:var(--blue-700)}
+.search-result{margin-top:6px;background:var(--surface-200);border:1px solid var(--stroke-default);border-radius:10px;overflow:hidden;display:none}
+.search-result.visible{display:block}
+.result-row{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .1s}
+.result-row:hover{background:var(--state-hover)}
+.result-avatar{width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--surface-300)}
+.result-avatar img{width:40px;height:40px;object-fit:cover}
+.result-name{font-family:'Builder Sans',system-ui,sans-serif;font-size:15px;font-weight:600;color:var(--content-emphasis)}
+.result-loading{padding:13px 16px;font-family:'Builder Sans',system-ui,sans-serif;font-size:14px;color:var(--content-muted);display:none}
+.modal-body{padding:0 24px 20px;overflow-y:auto;max-height:260px}
+.friends-label{font-family:'Builder Sans',system-ui,sans-serif;font-size:15px;font-weight:700;color:var(--content-emphasis);margin-bottom:4px}
+.no-friends{font-family:'Builder Sans',system-ui,sans-serif;font-size:14px;color:var(--content-muted);padding:12px 0;text-align:center}
+
+/* AMOUNT SCREEN */
+.user-screen-body{padding:20px 24px 16px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.user-avatar-lg{width:72px;height:72px;border-radius:50%;overflow:hidden;background:var(--surface-300);flex-shrink:0}
+.user-avatar-lg img{width:72px;height:72px;object-fit:cover}
+.user-screen-name{font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:22px;font-weight:700;color:var(--content-emphasis);letter-spacing:-0.3px}
+.user-screen-bal{display:flex;align-items:center;gap:7px;font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:26px;font-weight:700;color:var(--content-emphasis)}
+.user-screen-bal img{width:26px;height:26px;object-fit:contain}
+.custom-input{width:100%;background:var(--surface-200);border:1.5px solid var(--stroke-default);border-radius:10px;padding:13px 16px;color:var(--content-emphasis);font-family:'Builder Sans',system-ui,sans-serif;font-size:15px;font-weight:400;outline:none;transition:border-color .15s}
+.custom-input::placeholder{color:var(--content-muted)}
+.custom-input:focus{border-color:var(--blue-700)}
+.quick-amounts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%}
+.qa-btn{background:var(--surface-200);border:1px solid var(--stroke-default);border-radius:10px;padding:12px 8px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Builder Sans',system-ui,sans-serif;font-size:15px;font-weight:600;color:var(--content-emphasis);cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s}
+.qa-btn::before{content:'';position:absolute;inset:0;background:transparent;transition:background .1s}
+.qa-btn:hover::before{background:var(--state-hover)}
+.qa-btn.selected{border-color:var(--blue-700)}
+.qa-btn img{width:18px;height:18px;object-fit:contain;position:relative;z-index:1}
+.qa-btn span{position:relative;z-index:1}
+.user-screen-footer{padding:0 24px 20px;display:flex;flex-direction:column;gap:10px;width:100%}
+.next-btn{width:100%;background:var(--blue-700);color:#fff;border:none;border-radius:10px;padding:15px;font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:17px;font-weight:700;cursor:pointer;position:relative;overflow:hidden;letter-spacing:-0.2px}
+.next-btn::before{content:'';position:absolute;inset:0;background:transparent;transition:background .1s;border-radius:inherit}
+.next-btn:hover::before{background:rgba(255,255,255,.08)}
+.next-btn span{position:relative;z-index:1}
+.send-note{font-family:'Builder Sans',system-ui,sans-serif;font-size:12px;color:var(--content-muted);text-align:center;line-height:1.5}
+
+/* CONFIRM SCREEN */
+.confirm-card{background:var(--surface-200);border-radius:12px;padding:20px;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px}
+.confirm-name{font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:20px;font-weight:700;color:var(--content-emphasis);margin-top:4px}
+.confirm-handle{font-family:'Builder Sans',system-ui,sans-serif;font-size:14px;color:var(--content-muted)}
+.confirm-meta{font-family:'Builder Sans',system-ui,sans-serif;font-size:13px;color:var(--content-muted)}
+.confirm-amount-row{display:flex;align-items:center;gap:8px;font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:40px;font-weight:700;color:var(--content-emphasis);letter-spacing:-0.5px}
+.confirm-amount-row img{width:36px;height:36px;object-fit:contain}
+.btn-row{display:flex;gap:10px;width:100%}
+.btn-half{flex:1;background:var(--blue-700);color:#fff;border:none;border-radius:10px;padding:14px;font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:16px;font-weight:700;cursor:pointer;position:relative;overflow:hidden;letter-spacing:-0.1px}
+.btn-half::before{content:'';position:absolute;inset:0;background:transparent;transition:background .1s;border-radius:inherit}
+.btn-half:hover::before{background:rgba(255,255,255,.08)}
+.btn-half span{position:relative;z-index:1}
+.btn-half.gray{background:var(--surface-300)}
+
+/* TOAST */
+#toast{
+  position:fixed;top:-80px;left:50%;transform:translateX(-50%);z-index:999;
+  background:#353741;color:#f7f7f8;
+  font-family:'Builder Sans',system-ui,sans-serif;font-size:14px;font-weight:600;
+  padding:12px 24px;border-radius:9999px;
+  display:flex;align-items:center;gap:8px;
+  white-space:nowrap;
+  transition:top .35s cubic-bezier(.2,0,0,1);
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+}
+#toast.show{top:20px}
+#toast img{width:16px;height:16px;object-fit:contain}
+</style>
+</head>
+<body>
+
+<div class="topbar-frame">
+  <div class="bal">
+    <img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="R$">
+    <span class="bal-num">24</span>
+  </div>
+  <button class="sendbtn" type="button" id="openSend">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 11V3M3 7l4-4 4 4" stroke="#f7f7f8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Send</span>
+  </button>
+</div>
+
+<div class="wrap">
+  <h1 class="hero">Enjoy up to 25%<br>more Robux</h1>
+
+  <div class="section-frame">
+    <p class="blabel">Bonus item we picked for you</p>
+    <div class="banner">
+      <img class="banner-bg" src="https://tr.rbxcdn.com/180DAY-f6ed57f84cc19cede0d8e699dcc12a89/768/432/Image/Png/noFilter" alt="">
+      <div class="banner-inner">
+        <div class="thumb-wrap">
+          <img src="https://tr.rbxcdn.com/180DAY-c763118bf99eb7d78289970ebaac8c64/150/150/Image/Png/noFilter" alt="Adopt Me">
+          
+        </div>
+        <div>
+          <div class="bname">[2H ⏳] Adopt Me! <span class="iinfo">i</span></div>
+          <div class="bsub">+1 Pet Pen Slot</div>
+        </div>
+      </div>
+    </div>
+    <div class="pkgs">
+      <div class="pkg"><div class="pleft"><div class="pamount"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">24,000</div><div class="porig"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">22,500</div><div class="pills"><span class="pill">+ 1500 more</span></div></div><button class="buybtn"><span>$199.99</span></button></div>
+      <div class="pkg"><div class="pleft"><div class="pamount"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">11,000</div><div class="porig"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">10,000</div><div class="pills"><span class="pill">+ 1000 more</span></div></div><button class="buybtn"><span>$99.99</span></button></div>
+      <div class="pkg"><div class="pleft"><div class="pamount"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">5,250</div><div class="porig"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">4,500</div><div class="pills"><span class="pill">+ 750 more</span></div></div><button class="buybtn"><span>$49.99</span></button></div>
+      <div class="pkg"><div class="pleft"><div class="pamount"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">3,625</div><div class="porig"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">3,150</div><div class="pills"><span class="pill">+ 475 more</span></div></div><button class="buybtn"><span>$29.99</span></button></div>
+      <div class="pkg"><div class="pleft"><div class="pamount"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">2,000</div><div class="porig"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">1,700</div><div class="pills"><span class="pill">+ 300 more</span></div></div><button class="buybtn"><span>$19.99</span></button></div>
+    </div>
+  </div>
+
+  <div class="section-frame">
+    <div>
+      <div class="sec2-title">Robux packages</div>
+      <div class="sec2-sub">By purchasing Robux, you agree to our Terms of Use, including the arbitration clause and revocation policy.</div>
+    </div>
+    <div class="pkgs">
+      <div class="pkg"><div class="pleft"><div class="pamount"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">1,500</div><div class="porig"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">1,200</div><div class="pills"><span class="pill">+ 300 more</span><span class="pill-foryou"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">For you</span></div></div><button class="buybtn buybtn-blue"><span>$11.99</span></button></div>
+      <div class="pkg"><div class="pleft"><div class="pamount"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">1,000</div><div class="porig"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">800</div><div class="pills"><span class="pill">+ 200 more</span></div></div><button class="buybtn"><span>$9.99</span></button></div>
+      <div class="pkg"><div class="pleft"><div class="pamount"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">500</div><div class="porig"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">400</div><div class="pills"><span class="pill">+ 100 more</span></div></div><button class="buybtn"><span>$4.99</span></button></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">
+        <img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">
+        Send Robux
+      </div>
+      <div class="modal-right">
+        <div class="modal-bal-num">
+          <img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">
+          24
+        </div>
+        <button class="close-btn" id="closeModal">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="#bcbec8" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- S1: SEARCH -->
+    <div class="screen active" id="s1">
+      <div class="modal-search">
+        <input class="search-input" type="text" id="searchInput" placeholder="Search by username" autocomplete="off">
+        <div class="result-loading" id="resultLoading">Searching...</div>
+        <div class="search-result" id="searchResult">
+          <div class="result-row" id="resultRow">
+            <div class="result-avatar"><img id="resultAvatar" src="" alt=""></div>
+            <div class="result-name" id="resultName"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="friends-label">My friends (0)</div>
+        <div class="no-friends">You have no friends yet.</div>
+      </div>
+    </div>
+
+    <!-- S2: AMOUNT -->
+    <div class="screen" id="s2">
+      <div class="user-screen-body">
+        <div class="user-avatar-lg"><img id="userAvatarLg" src="" alt=""></div>
+        <div class="user-screen-name" id="userScreenName"></div>
+        <div class="user-screen-bal">
+          <img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">
+          <span id="liveAmount">0</span>
+        </div>
+        <input class="custom-input" type="number" placeholder="Custom" min="1" id="customInput">
+        <div class="quick-amounts">
+          <button class="qa-btn" data-val="25"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt=""><span>25</span></button>
+          <button class="qa-btn" data-val="50"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt=""><span>50</span></button>
+          <button class="qa-btn" data-val="100"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt=""><span>100</span></button>
+          <button class="qa-btn" data-val="200"><img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt=""><span>200</span></button>
+        </div>
+      </div>
+      <div class="user-screen-footer">
+        <button class="next-btn" id="nextBtn"><span>Next</span></button>
+        <div class="send-note">Robux are sent up to 2 days</div>
+      </div>
+    </div>
+
+    <!-- S3: CONFIRM -->
+    <div class="screen" id="s3">
+      <div class="user-screen-body">
+        <div class="confirm-card">
+          <div class="user-avatar-lg"><img id="confirmAvatar" src="" alt=""></div>
+          <div class="confirm-name" id="confirmName"></div>
+          <div class="confirm-handle" id="confirmHandle"></div>
+          <div class="confirm-meta" id="mutualFriends">• 282 mutual friends</div>
+          <div class="confirm-meta">• Joined in 2025</div>
+        </div>
+        <div class="confirm-amount-row">
+          <img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">
+          <span id="confirmAmount">0</span>
+        </div>
+      </div>
+      <div class="user-screen-footer">
+        <div class="btn-row">
+          <button class="btn-half" id="sendBtn"><span>Send</span></button>
+          <button class="btn-half gray" id="editBtn"><span>Edit</span></button>
+        </div>
+        <div class="send-note">Recipient will receive Robux within 2 days. Transactions cannot be cancelled once sent.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast">
+  <img src="https://cdn3.emoji.gg/emojis/6588_robux.png" alt="">
+  <span id="toastText"></span>
+</div>
+
+<script>
+const overlay = document.getElementById('overlay');
+const openBtn = document.getElementById('openSend');
+const closeBtn = document.getElementById('closeModal');
+const searchInput = document.getElementById('searchInput');
+const searchResult = document.getElementById('searchResult');
+const resultRow = document.getElementById('resultRow');
+const resultAvatar = document.getElementById('resultAvatar');
+const resultName = document.getElementById('resultName');
+const resultLoading = document.getElementById('resultLoading');
+
+let currentUser = {name:'', avatar:''};
+let currentAmount = 0;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function resetModal(){
+  searchInput.value='';
+  hideResults();
+  showScreen('s1');
+  document.querySelectorAll('.qa-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('customInput').value='';
+  document.getElementById('liveAmount').textContent='0';
+  currentAmount=0;
+}
+
+openBtn.addEventListener('click', ()=>{ overlay.classList.add('open'); });
+closeBtn.addEventListener('click', ()=>{ overlay.classList.remove('open'); resetModal(); });
+overlay.addEventListener('click', e=>{ if(e.target===overlay){ overlay.classList.remove('open'); resetModal(); }});
+
+function hideResults(){
+  searchResult.classList.remove('visible');
+  resultLoading.style.display='none';
+}
+
+let debounceTimer;
+searchInput.addEventListener('input', ()=>{
+  const q = searchInput.value.trim();
+  hideResults();
+  clearTimeout(debounceTimer);
+  if(!q) return;
+  resultLoading.style.display='block';
+  debounceTimer = setTimeout(async ()=>{
+    try {
+      // 1. search username → get user id
+      const searchRes = await fetch(`https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(q)}&limit=1`);
+      const searchData = await searchRes.json();
+      resultLoading.style.display='none';
+      if(!searchData.data || searchData.data.length===0){ return; }
+      const user = searchData.data[0];
+      resultName.textContent = user.name;
+      resultRow.dataset.uname = user.name;
+      resultRow.dataset.uid = user.id;
+      // 2. fetch headshot avatar
+      const avRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.id}&size=150x150&format=Png&isCircular=true`);
+      const avData = await avRes.json();
+      const url = avData.data && avData.data[0] ? avData.data[0].imageUrl : '';
+      resultAvatar.src = url;
+      resultRow.dataset.uavatar = url;
+      searchResult.classList.add('visible');
+    } catch(e){
+      resultLoading.style.display='none';
+    }
+  }, 500);
+});
+
+resultRow.addEventListener('click', ()=>{
+  currentUser.name = resultRow.dataset.uname || '';
+  currentUser.avatar = resultRow.dataset.uavatar || '';
+  document.getElementById('userAvatarLg').src = currentUser.avatar;
+  document.getElementById('userScreenName').textContent = currentUser.name;
+  document.getElementById('liveAmount').textContent = currentAmount || '0';
+  showScreen('s2');
+});
+
+// live amount update
+const customInput = document.getElementById('customInput');
+const liveAmount = document.getElementById('liveAmount');
+
+customInput.addEventListener('input', ()=>{
+  const v = parseInt(customInput.value) || 0;
+  currentAmount = v;
+  liveAmount.textContent = v > 0 ? v.toLocaleString() : '0';
+  document.querySelectorAll('.qa-btn').forEach(b=>b.classList.remove('selected'));
+});
+
+document.querySelectorAll('.qa-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.qa-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const v = parseInt(btn.dataset.val);
+    currentAmount = v;
+    customInput.value = v;
+    liveAmount.textContent = v.toLocaleString();
+  });
+});
+
+// Next → confirm screen
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  const mutualCount = Math.floor(Math.random()*(300-40+1))+40;
+  document.getElementById('mutualFriends').textContent = '• '+mutualCount+' mutual friends';
+  document.getElementById('confirmAvatar').src = currentUser.avatar;
+  document.getElementById('confirmName').textContent = currentUser.name;
+  document.getElementById('confirmHandle').textContent = '@' + currentUser.name;
+  document.getElementById('confirmAmount').textContent = currentAmount > 0 ? currentAmount.toLocaleString() : '0';
+  showScreen('s3');
+});
+
+// Edit → back to amount screen
+document.getElementById('editBtn').addEventListener('click', ()=>{
+  showScreen('s2');
+});
+
+// Send → toast
+document.getElementById('sendBtn').addEventListener('click', ()=>{
+  overlay.classList.remove('open');
+  const name = currentUser.name;
+  setTimeout(()=>{
+    showToast('Robux sent to ' + name);
+    resetModal();
+  }, 1000);
+});
+
+function showToast(msg){
+  const toast = document.getElementById('toast');
+  document.getElementById('toastText').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 3500);
+}
+</script>
+
+<!-- MOD MENU BTN -->
+<button id="modBtn" onclick="document.getElementById('modPanel').classList.toggle('open')">
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v2M7 11v2M1 7h2M11 7h2M3.05 3.05l1.42 1.42M9.54 9.54l1.41 1.41M3.05 10.95l1.42-1.41M9.54 4.46l1.41-1.41" stroke="#f7f7f8" stroke-width="1.5" stroke-linecap="round"/></svg>
+  MOD MENU
+</button>
+
+<!-- MOD PANEL -->
+<div id="modPanel">
+  <div class="mp-header">
+    <span class="mp-title">⚙️ Mod Menu</span>
+    <button class="mp-close" onclick="document.getElementById('modPanel').classList.remove('open')">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="#bcbec8" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="mp-section">
+    <div class="mp-section-label">Change Robux Balance</div>
+    <div class="mp-row">
+      <input class="mp-input" type="number" id="robuxAmountInput" placeholder="Enter amount..." min="0">
+      <button class="mp-apply-btn" id="applyRobuxBtn">Apply</button>
+    </div>
+    <div class="mp-quick-row">
+      <button class="mp-quick" data-rbx="100">100</button>
+      <button class="mp-quick" data-rbx="1000">1K</button>
+      <button class="mp-quick" data-rbx="10000">10K</button>
+      <button class="mp-quick" data-rbx="88888">88K</button>
+      <button class="mp-quick" data-rbx="999999">999K</button>
+    </div>
+  </div>
+  <div class="mp-divider"></div>
+  <div class="mp-section">
+    <div class="mp-section-label">Change Game Banner</div>
+    <div class="mp-banner-options">
+      <div class="mp-banner-opt active" data-banner="https://tr.rbxcdn.com/180DAY-f6ed57f84cc19cede0d8e699dcc12a89/768/432/Image/Png/noFilter" data-thumb="https://tr.rbxcdn.com/180DAY-c763118bf99eb7d78289970ebaac8c64/150/150/Image/Png/noFilter" data-name="Adopt Me!" data-pass="[2H ⏳] Adopt Me!" data-sub="+1 Pet Pen Slot">
+        <img class="mp-banner-preview" src="https://tr.rbxcdn.com/180DAY-f6ed57f84cc19cede0d8e699dcc12a89/768/432/Image/Png/noFilter" alt="">
+        <span>Adopt Me!</span>
+      </div>
+      <div class="mp-banner-opt" data-banner="https://tr.rbxcdn.com/180DAY-7566267f5e672e710c4a1cc0e889fa4c/768/432/Image/Webp/noFilter" data-thumb="https://tr.rbxcdn.com/180DAY-e03fae3ffce52f4432de392082fa43b7/150/150/Image/Webp/noFilter" data-name="SAB" data-pass="Steal a Brainrot" data-sub="Get Admin Panel Gamepass">
+        <img class="mp-banner-preview" src="https://tr.rbxcdn.com/180DAY-7566267f5e672e710c4a1cc0e889fa4c/768/432/Image/Webp/noFilter" alt="">
+        <span>SAB</span>
+      </div>
+      <div class="mp-banner-opt" data-banner="https://tr.rbxcdn.com/180DAY-82b559d4f2bd68f909d4b9bdd92d168e/768/432/Image/Webp/noFilter" data-thumb="https://tr.rbxcdn.com/180DAY-77ef2d695f297fda7645bdc241a2ab0c/150/150/Image/Webp/noFilter" data-name="Keyboard Escape" data-pass="Keyboard Escape" data-sub="+20 Slots items">
+        <img class="mp-banner-preview" src="https://tr.rbxcdn.com/180DAY-82b559d4f2bd68f909d4b9bdd92d168e/768/432/Image/Webp/noFilter" alt="">
+        <span>Keyboard Escape</span>
+      </div>
+    </div>
+  </div>
+  <div class="mp-divider"></div>
+  <div class="mp-section">
+    <div class="mp-section-label">Add to Friend List</div>
+    <div class="mp-row">
+      <input class="mp-input" type="text" id="friendInput" placeholder="Enter username...">
+      <button class="mp-apply-btn" id="addFriendBtn">Add</button>
+    </div>
+    <div id="friendList"></div>
+  </div>
+</div>
+
+<style>
+#modBtn{position:fixed;bottom:20px;right:20px;z-index:200;background:#272930;border:1px solid rgba(208,217,251,.2);border-radius:10px;padding:10px 16px;color:#f7f7f8;font-family:'Builder Sans',system-ui,sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 4px 20px rgba(0,0,0,.5);transition:background .15s,border-color .15s}
+#modBtn:hover{background:#353741;border-color:rgba(208,217,251,.35)}
+#modPanel{position:fixed;bottom:70px;right:20px;z-index:199;background:#191a1f;border:1px solid rgba(208,217,251,.14);border-radius:16px;width:320px;box-shadow:0 8px 40px rgba(0,0,0,.7);overflow:hidden;display:none;flex-direction:column}
+#modPanel.open{display:flex}
+.mp-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 12px;border-bottom:1px solid rgba(208,217,251,.1)}
+.mp-title{font-family:'Builder Extended','Builder Sans',system-ui,sans-serif;font-size:16px;font-weight:700;color:#f7f7f8;letter-spacing:-0.2px}
+.mp-close{background:none;border:none;cursor:pointer;padding:4px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:background .1s}
+.mp-close:hover{background:rgba(208,217,251,.1)}
+.mp-section{padding:14px 18px}
+.mp-section-label{font-family:'Builder Sans',system-ui,sans-serif;font-size:11px;font-weight:700;color:#bcbec8;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.mp-row{display:flex;gap:8px}
+.mp-input{flex:1;background:#202227;border:1.5px solid rgba(208,217,251,.12);border-radius:8px;padding:9px 12px;color:#f7f7f8;font-family:'Builder Sans',system-ui,sans-serif;font-size:14px;outline:none;transition:border-color .15s}
+.mp-input::placeholder{color:#6a6f81}
+.mp-input:focus{border-color:#335fff}
+.mp-apply-btn{background:#335fff;color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:'Builder Sans',system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .15s}
+.mp-apply-btn:hover{opacity:.85}
+.mp-quick-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.mp-quick{background:#202227;border:1px solid rgba(208,217,251,.12);border-radius:7px;padding:6px 10px;color:#d5d7dd;font-family:'Builder Sans',system-ui,sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:background .1s,border-color .1s}
+.mp-quick:hover{background:#272930;border-color:rgba(208,217,251,.25)}
+.mp-divider{height:1px;background:rgba(208,217,251,.1);margin:0 18px}
+#friendList{display:flex;flex-direction:column;gap:6px;margin-top:10px;max-height:200px;overflow-y:auto}
+.friend-item{display:flex;align-items:center;gap:10px;background:#202227;border-radius:9px;padding:8px 10px}
+.friend-item-avatar{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#272930}
+.friend-item-avatar img{width:36px;height:36px;object-fit:cover}
+.friend-item-name{font-family:'Builder Sans',system-ui,sans-serif;font-size:14px;font-weight:600;color:#f7f7f8;flex:1}
+.friend-item-remove{background:none;border:none;cursor:pointer;color:#6a6f81;padding:2px;border-radius:4px;display:flex;align-items:center;transition:color .1s}
+.friend-item-remove:hover{color:#f7f7f8}
+</style>
+
+<script>
+document.querySelectorAll('.mp-quick').forEach(btn=>{
+  btn.addEventListener('click',()=>{ document.getElementById('robuxAmountInput').value=btn.dataset.rbx; });
+});
+
+document.getElementById('applyRobuxBtn').addEventListener('click',()=>{
+  const val=parseInt(document.getElementById('robuxAmountInput').value);
+  if(isNaN(val)||val<0) return;
+  const display=val>=1000000?(val/1000000).toFixed(1)+'M':val>=1000?Math.floor(val/1000)+'K':val.toString();
+  document.querySelector('.bal-num').textContent=display;
+  document.querySelectorAll('.modal-bal-num').forEach(el=>{const img=el.querySelector('img');el.textContent=' '+display;if(img)el.prepend(img);});
+  showToast('Balance updated to '+display+' Robux');
+});
+
+document.getElementById('addFriendBtn').addEventListener('click',addFriend);
+document.getElementById('friendInput').addEventListener('keydown',e=>{if(e.key==='Enter')addFriend();});
+
+let friends=[];
+
+async function addFriend(){
+  const input=document.getElementById('friendInput');
+  const name=input.value.trim();
+  if(!name||friends.find(f=>f.name&&f.name.toLowerCase()===name.toLowerCase())) return;
+  input.value='';
+  // fetch real avatar from Roblox
+  let avatar = '';
+  try {
+    const sr = await fetch(`https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(name)}&limit=1`);
+    const sd = await sr.json();
+    if(sd.data && sd.data[0]){
+      const uid = sd.data[0].id;
+      const ar = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${uid}&size=150x150&format=Png&isCircular=true`);
+      const ad = await ar.json();
+      avatar = ad.data && ad.data[0] ? ad.data[0].imageUrl : '';
+    }
+  } catch(e){}
+  friends.push({name, avatar});
+  renderFriends();
+  updateFriendCount();
+}
+
+function removeFriend(name){
+  friends=friends.filter(f=>(f.name||f)!==name);
+  renderFriends();
+  updateFriendCount();
+}
+
+function renderFriends(){
+  const list=document.getElementById('friendList');
+  list.innerHTML='';
+  friends.forEach(f=>{
+    const name = f.name||f;
+    const av = f.avatar||`https://api.dicebear.com/7.x/pixel-art/svg?seed=${encodeURIComponent(name)}&backgroundColor=202227`;
+    const item=document.createElement('div');
+    item.className='friend-item';
+    item.innerHTML=`<div class="friend-item-avatar"><img src="${av}" alt=""></div><div class="friend-item-name">${name}</div><button class="friend-item-remove" title="Remove"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3L3 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>`;
+    item.querySelector('.friend-item-remove').addEventListener('click',()=>removeFriend(name));
+    list.appendChild(item);
+  });
+}
+
+function updateFriendCount(){
+  const label=document.querySelector('.friends-label');
+  if(label) label.textContent=`My friends (${friends.length})`;
+  const body=document.querySelector('.modal-body');
+  if(!body) return;
+  body.querySelectorAll('.modal-friend-row').forEach(r=>r.remove());
+  const noF=body.querySelector('.no-friends');
+  if(friends.length>0){
+    if(noF) noF.style.display='none';
+    friends.forEach(f=>{
+      const name=f.name||f;
+      const av=f.avatar||`https://api.dicebear.com/7.x/pixel-art/svg?seed=${encodeURIComponent(name)}&backgroundColor=202227`;
+      const row=document.createElement('div');
+      row.className='result-row modal-friend-row';
+      row.style.cssText='padding:10px 0;border-bottom:1px solid rgba(208,217,251,.1);cursor:pointer';
+      row.dataset.uname=name;row.dataset.uavatar=av;
+      row.innerHTML=`<div class="result-avatar"><img src="${av}" alt=""></div><div class="result-name">${name}</div>`;
+      row.addEventListener('click',()=>{
+        currentUser.name=name;currentUser.avatar=av;
+        document.getElementById('userAvatarLg').src=av;
+        document.getElementById('userScreenName').textContent=name;
+        document.getElementById('liveAmount').textContent='0';
+        showScreen('s2');
+      });
+      body.appendChild(row);
+    });
+  } else {
+    if(noF) noF.style.display='block';
+  }
+}
+</script>
+
+
+<style>
+.mp-banner-options{display:flex;gap:8px;flex-wrap:wrap}
+.mp-banner-opt{
+  flex:1;cursor:pointer;border-radius:9px;overflow:hidden;
+  border:2px solid transparent;
+  transition:border-color .15s;
+  display:flex;flex-direction:column;
+  background:#202227;
+}
+.mp-banner-opt.active{border-color:#335fff}
+.mp-banner-opt:hover:not(.active){border-color:rgba(208,217,251,.25)}
+.mp-banner-preview{width:100%;height:54px;object-fit:cover;object-position:center 30%;display:block}
+.mp-banner-opt span{font-family:'Builder Sans',system-ui,sans-serif;font-size:11px;font-weight:700;color:#d5d7dd;text-align:center;padding:5px 4px;display:block}
+</style>
+
+<script>
+document.querySelectorAll('.mp-banner-opt').forEach(opt=>{
+  opt.addEventListener('click',()=>{
+    document.querySelectorAll('.mp-banner-opt').forEach(o=>o.classList.remove('active'));
+    opt.classList.add('active');
+    const bannerUrl = opt.dataset.banner;
+    const thumbUrl = opt.dataset.thumb;
+    const passName = opt.dataset.pass;
+    // update banner bg
+    const bannerBg = document.querySelector('.banner-bg');
+    if(bannerBg) bannerBg.src = bannerUrl;
+    // update thumb
+    const thumbImg = document.querySelector('.thumb-wrap img');
+    if(thumbImg) thumbImg.src = thumbUrl;
+    // update pass name
+    const bname = document.querySelector('.bname');
+    if(bname){
+      const iinfo = bname.querySelector('.iinfo');
+      bname.textContent = passName + ' ';
+      if(iinfo) bname.appendChild(iinfo);
+    }
+    // update sub text
+    const bsub = document.querySelector('.bsub');
+    if(bsub) bsub.textContent = opt.dataset.sub || '';
+    showToast('Banner changed to ' + opt.dataset.name);
+  });
+});
+</script>
+
+</body>
+</html>
