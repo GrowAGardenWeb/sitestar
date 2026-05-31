@@ -546,15 +546,11 @@ async function addFriend(){
   // fetch real avatar from Roblox
   let avatar = '';
   try {
-    const sr = await fetch(`https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(name)}&limit=1`);
-    const sd = await sr.json();
-    if(sd.data && sd.data[0]){
-      const uid = sd.data[0].id;
-      const ar = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${uid}&size=150x150&format=Png&isCircular=true`);
-      const ad = await ar.json();
-      avatar = ad.data && ad.data[0] ? ad.data[0].imageUrl : '';
-    }
+    const res = await fetch(`https://roblox-proxy.moneyscriptsoficial.workers.dev?q=${encodeURIComponent(name)}`);
+    const data = await res.json();
+    if(data.name) avatar = data.avatar || '';
   } catch(e){}
+  if(!avatar) avatar=`https://api.dicebear.com/7.x/pixel-art/svg?seed=${encodeURIComponent(name)}&backgroundColor=202227`;
   friends.push({name, avatar});
   renderFriends();
   updateFriendCount();
