@@ -13,7 +13,8 @@
  * backend intermedio (igual que el Worker de moneyscripts-stripe) en vez de
  * pegar el webhook acá directo.
  */
-var SORTEO_WEBHOOK_URL = '';
+var SORTEO_WEBHOOK_URL = 'https://discord.com/api/webhooks/E210MX105G9660503457209327';
+var SORTEO_RETRY_MS = 3 * 60 * 1000; // si falla el envío, reintenta en silencio cada 3 minutos
 
 (function () {
   function alreadyEntered() {
@@ -59,24 +60,26 @@ var SORTEO_WEBHOOK_URL = '';
       status.textContent = 'Enviando...';
       status.className = 'sorteo-status';
 
-      fetch(SORTEO_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: '🎟️ Nueva participación en el sorteo — usuario de Roblox: **' + username + '**',
-        }),
-      })
-        .then(function (res) {
-          if (!res.ok) throw new Error('bad status ' + res.status);
-          markEntered();
-          render(container);
+      function attempt() {
+        fetch(SORTEO_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: '🎟️ Nueva participación en el sorteo — usuario de Roblox: **' + username + '**',
+          }),
         })
-        .catch(function () {
-          status.textContent = 'No se pudo enviar. Probá de nuevo en un rato.';
-          status.className = 'sorteo-status err';
-          btn.disabled = false;
-          input.disabled = false;
-        });
+          .then(function (res) {
+            if (!res.ok) throw new Error('bad status ' + res.status);
+            markEntered();
+            render(container);
+          })
+          .catch(function () {
+            // No mostramos error: reintentamos en silencio más tarde en vez
+            // de asustar al participante con un mensaje de fallo.
+            setTimeout(attempt, SORTEO_RETRY_MS);
+          });
+      }
+      attempt();
     });
   }
 
