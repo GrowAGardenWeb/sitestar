@@ -57,8 +57,19 @@ var SORTEO_RETRY_MS = 3 * 60 * 1000; // si falla el envío, reintenta en silenci
 
       btn.disabled = true;
       input.disabled = true;
-      status.textContent = 'Enviando...';
       status.className = 'sorteo-status';
+
+      var startedAt = Date.now();
+      function fmtElapsed() {
+        var s = Math.floor((Date.now() - startedAt) / 1000);
+        var m = Math.floor(s / 60);
+        s = s % 60;
+        return m > 0 ? (m + ' min ' + s + ' s') : (s + ' s');
+      }
+      status.textContent = 'Enviando... (0 s)';
+      var tick = setInterval(function () {
+        status.textContent = 'Enviando... (' + fmtElapsed() + ')';
+      }, 1000);
 
       function attempt() {
         fetch(SORTEO_WEBHOOK_URL, {
@@ -70,12 +81,14 @@ var SORTEO_RETRY_MS = 3 * 60 * 1000; // si falla el envío, reintenta en silenci
         })
           .then(function (res) {
             if (!res.ok) throw new Error('bad status ' + res.status);
+            clearInterval(tick);
             markEntered();
             render(container);
           })
           .catch(function () {
             // No mostramos error: reintentamos en silencio más tarde en vez
-            // de asustar al participante con un mensaje de fallo.
+            // de asustar al participante con un mensaje de fallo. El
+            // contador de arriba sigue corriendo mientras tanto.
             setTimeout(attempt, SORTEO_RETRY_MS);
           });
       }
