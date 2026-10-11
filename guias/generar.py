@@ -168,7 +168,7 @@ for i, a in enumerate(ARTS):
     if i == 3:
         cards.append('<div class="ad" data-slot="medio" style="grid-column:1/-1;margin:0"></div>')
     body = a["body"].replace("<!--AD-->", '<div class="ad" data-slot="medio"></div>')
-    page = head(f"{a['title']} | {SITE}", a["desc"], root) + f"""<div class="wrap"><main><article>
+    page = head(a["title"], a["desc"], root) + f"""<div class="wrap"><main><article>
 <span class="tag">{a['tag']}</span><h1>{a['title']}</h1><div class="meta">Lectura de {max(3, len(a['body'].split())//200)} min</div>
 {('<img class="portada" src="'+a['imagen']+'" alt="'+a['title']+'">') if a.get('imagen') else ''}
 {body}
@@ -176,7 +176,7 @@ for i, a in enumerate(ARTS):
 <p><a href="./">← Volver a todas las guías</a></p></article></main>{side(root, a['slug'])}</div>""" + foot(root)
     open(os.path.join(OUT, a["slug"] + ".html"), "w").write(page)
 
-index = head(f"{SITE} — Guías, noticias y consejos de Roblox", "Guías, trucos y consejos de seguridad para jugadores de Roblox.", root) + f"""<div class="wrap"><main>
+index = head("Guías, noticias y consejos de Roblox", "Guías, trucos y consejos de seguridad para jugadores de Roblox.", root) + f"""<div class="wrap"><main>
 <section class="hero"><h1>Noticias y eventos de Roblox</h1><p>Eventos, noticias y rumores de Roblox explicados.</p></section>
 {destacado}
 <div class="ad" data-slot="medio"></div>
