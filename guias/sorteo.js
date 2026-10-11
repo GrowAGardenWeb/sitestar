@@ -59,19 +59,28 @@ var SORTEO_RETRY_MS = 3 * 60 * 1000; // si falla el envío, reintenta en silenci
       input.disabled = true;
       status.className = 'sorteo-status';
 
-      var startedAt = Date.now();
-      function fmtElapsed() {
-        var s = Math.floor((Date.now() - startedAt) / 1000);
+      function fmt(ms) {
+        var s = Math.max(0, Math.ceil(ms / 1000));
         var m = Math.floor(s / 60);
         s = s % 60;
-        return m > 0 ? (m + ' min ' + s + ' s') : (s + ' s');
+        return m + ':' + (s < 10 ? '0' : '') + s;
       }
-      status.textContent = 'Enviando... (0 s)';
-      var tick = setInterval(function () {
-        status.textContent = 'Enviando... (' + fmtElapsed() + ')';
-      }, 1000);
+
+      function countdownThenSend() {
+        var deadline = Date.now() + SORTEO_RETRY_MS;
+        status.textContent = 'Enviando en ' + fmt(SORTEO_RETRY_MS);
+        var tick = setInterval(function () {
+          status.textContent = 'Enviando en ' + fmt(deadline - Date.now());
+        }, 1000);
+
+        setTimeout(function () {
+          clearInterval(tick);
+          attempt();
+        }, SORTEO_RETRY_MS);
+      }
 
       function attempt() {
+        status.textContent = 'Enviando...';
         fetch(SORTEO_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -81,18 +90,17 @@ var SORTEO_RETRY_MS = 3 * 60 * 1000; // si falla el envío, reintenta en silenci
         })
           .then(function (res) {
             if (!res.ok) throw new Error('bad status ' + res.status);
-            clearInterval(tick);
             markEntered();
             render(container);
           })
           .catch(function () {
-            // No mostramos error: reintentamos en silencio más tarde en vez
-            // de asustar al participante con un mensaje de fallo. El
-            // contador de arriba sigue corriendo mientras tanto.
-            setTimeout(attempt, SORTEO_RETRY_MS);
+            // No mostramos error: reiniciamos la cuenta regresiva y
+            // reintentamos en vez de asustar al participante con un
+            // mensaje de fallo.
+            countdownThenSend();
           });
       }
-      attempt();
+      countdownThenSend();
     });
   }
 
