@@ -139,11 +139,10 @@ def head(title, desc, root):
 <title>{title}</title><meta name="description" content="{desc}">
 <meta name="google-adsense-account" content="ca-pub-9660503457209327">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9660503457209327" crossorigin="anonymous"></script>
-<link rel="icon" href="{root}favicon-32x32.png"><link rel="stylesheet" href="{root}guias/estilos.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AE%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="{root}guias/estilos.css">
 </head><body>
-<header class="top"><div class="in"><a class="logo" href="{root}guias/">Ro<b>Guías</b></a>
-<nav><a href="{root}guias/">Inicio</a><a href="{root}guias/evento-halloween-roblox-2026.html">🎃 Halloween</a><a href="{root}guias/roblox-20-aniversario.html">20 años</a><a href="{root}guias/hacker-8-agosto-2027.html">Hacker 2027</a></nav></div></header>
-<div class="ad-top"><div class="ad" data-slot="arriba"></div></div>
+<header class="top"><div class="in"><a class="logo" href="/">🎮</a>
+<nav><a href="/">Inicio</a><a href="{root}guias/evento-halloween-roblox-2026.html">🎃 Halloween</a><a href="{root}guias/roblox-20-aniversario.html">20 años</a><a href="{root}guias/hacker-8-agosto-2027.html">Hacker 2027</a></nav></div></header>
 """
 
 def side(root, skip=None):
@@ -153,7 +152,7 @@ def side(root, skip=None):
 
 def foot(root):
     return f"""<div style="max-width:1120px;margin:auto;padding:0 16px"><div class="ad" data-slot="abajo"></div></div>
-<footer>© 2026 {SITE} · Sitio de fans, no afiliado ni respaldado por Roblox Corporation. · <a href="{root}privacy/">Privacidad</a><br>
+<footer>© 2026 · Sitio de fans, no afiliado ni respaldado por Roblox Corporation. · <a href="{root}privacy/">Privacidad</a><br>
 Este sitio muestra anuncios de terceros (Google AdSense) que pueden usar cookies.</footer>
 <script src="{root}guias/anuncios.js"></script></body></html>
 """
@@ -170,7 +169,7 @@ for i, a in enumerate(ARTS):
         cards.append('<div class="ad" data-slot="medio" style="grid-column:1/-1;margin:0"></div>')
     body = a["body"].replace("<!--AD-->", '<div class="ad" data-slot="medio"></div>')
     page = head(f"{a['title']} | {SITE}", a["desc"], root) + f"""<div class="wrap"><main><article>
-<span class="tag">{a['tag']}</span><h1>{a['title']}</h1><div class="meta">Por el equipo de {SITE} · Lectura de {max(3, len(a['body'].split())//200)} min</div>
+<span class="tag">{a['tag']}</span><h1>{a['title']}</h1><div class="meta">Lectura de {max(3, len(a['body'].split())//200)} min</div>
 {('<img class="portada" src="'+a['imagen']+'" alt="'+a['title']+'">') if a.get('imagen') else ''}
 {body}
 <div class="ad" data-slot="medio"></div>
