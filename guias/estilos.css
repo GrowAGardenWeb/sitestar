@@ -26,6 +26,12 @@ article li{margin:4px 0}
 .side .sticky{position:sticky;top:76px;display:flex;flex-direction:column;gap:16px}
 .side .list{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
 .side .list h3{margin:0 0 8px;font-size:16px}.side .list a{display:block;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+/* Espacios de anuncio */
+.ad{margin:20px 0;text-align:center;min-height:100px}
+.ad small{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.ad .ph{background:var(--ad);border:1px dashed var(--line);border-radius:10px;min-height:90px;display:grid;place-items:center;color:var(--muted);font-size:14px}
+.ad.tall .ph{min-height:600px}.ad.box250 .ph{min-height:250px}
+.ad-top{max-width:1120px;margin:12px auto 0;padding:0 16px}
 footer{border-top:1px solid var(--line);margin-top:30px;padding:24px 16px;text-align:center;color:var(--muted);font-size:13px}
 .destacado{flex-direction:row;margin-bottom:8px}.destacado .img{height:auto;min-height:200px;flex:0 0 40%;font-size:90px}
 .destacado .body{padding:22px;align-self:center}.destacado h2{font-size:clamp(22px,3vw,30px)}.destacado p{font-size:16px}
@@ -34,13 +40,3 @@ img.img{width:100%;object-fit:cover;display:block}.destacado img.img{flex:0 0 50
 @media (max-width:600px){.destacado img.img{width:100%;min-height:0;aspect-ratio:2/1}}
 .portada{width:100%;border-radius:12px;display:block;margin:4px 0 16px}
 article h3{margin:18px 0 4px;font-size:18px}
-/* Sorteo */
-.sorteo-box{background:linear-gradient(135deg,var(--bg),var(--card));border:1px solid var(--line);border-radius:14px;padding:18px;margin:22px 0}
-.sorteo-box.sorteo-done{display:flex;gap:14px;align-items:center}
-.sorteo-emoji{font-size:34px;line-height:1}
-.sorteo-form{display:flex;gap:8px;flex-wrap:wrap}
-.sorteo-input{flex:1;min-width:180px;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit}
-.sorteo-btn{padding:10px 18px;border-radius:9px;border:0;background:var(--brand2);color:#fff;font-weight:700;cursor:pointer;font:inherit}
-.sorteo-btn:disabled{opacity:.6;cursor:not-allowed}
-.sorteo-status{margin-top:8px;font-size:13px;color:var(--muted);min-height:16px}
-.sorteo-status.err{color:var(--brand)}
