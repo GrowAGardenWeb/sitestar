@@ -16,6 +16,7 @@ window.Quiz = (() => {
     { q: 'Los recursos visuales y gráficos combinan…', a: 'Imágenes, colores, símbolos, dibujos y textos',
       w: ['Solo sonidos', 'Solo números', 'Solo olores'] }
   ];
+  const STAR = on => `<svg class="${on ? '' : 'off'}" viewBox="0 0 100 100"><path d="M50 6l13 30 32 3-24 22 7 32-28-17-28 17 7-32L5 39l32-3z" fill="#ffc400" stroke="#05122e" stroke-width="7" stroke-linejoin="round"/></svg>`;
   const LETTERS = ['A', 'B', 'C', 'D'];
   const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const h = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
@@ -43,20 +44,21 @@ window.Quiz = (() => {
 
     // ---- intro
     intro.innerHTML = `
-      <h1>🎮 ¡EL SALÓN <span>VS</span> EL QUIZ!</h1>
+      <h1>¡EL SALÓN <em>VS</em><br>EL QUIZ!</h1>
       <div class="sub">¿Cuánto aprendieron? Respondan entre todos, en voz alta o levantando <b>1, 2, 3 o 4 dedos</b>.</div>
       <div class="rules">
-        <div class="rule"><b>6</b>preguntas</div>
-        <div class="rule"><b>${SECONDS}s</b>para responder</div>
-        <div class="rule"><b>🔥</b>rachas dan puntos extra</div>
+        <div class="rule panel"><b>6</b><span>preguntas</span></div>
+        <div class="rule panel"><b>${SECONDS}s</b><span>para responder</span></div>
+        <div class="rule panel"><b>+50</b><span>por racha de aciertos</span></div>
       </div>
-      <button class="btn" data-a="go">▶ JUGAR</button>
+      <button class="btn" data-a="go">JUGAR</button>
       <button class="link l" data-a="back">◀ Volver</button>
       <button class="link r" data-a="skip">Saltar juego ▶</button>`;
 
     // ---- estado
     let qs, idx, score, streak, results, locked, tmr, tStart, answered;
 
+    const scoreTxt = () => `Puntos: ${score}${streak > 1 ? ` · Racha x${streak}` : ''}`;
     function clearT() { clearInterval(tmr); tmr = null; }
     function show(s) { [intro, play, end].forEach(x => x.classList.toggle('on', x === s)); }
 
@@ -70,17 +72,17 @@ window.Quiz = (() => {
       const q = qs[idx]; locked = false; answered = false;
       play.innerHTML = '';
       const top = h('div', 'top');
-      top.append(h('div', 'pill', `Pregunta ${idx + 1}/${qs.length}`));
+      top.append(h('div', 'pill panel', `<span>Pregunta ${idx + 1}/${qs.length}</span>`));
       const pips = h('div', 'pips');
       qs.forEach((_, i) => pips.append(h('i', 'pip ' + (i < idx ? (results[i] ? 'ok' : 'bad') : i === idx ? 'now' : ''))));
-      top.append(pips, h('div', 'pill', `⭐ ${score}${streak > 1 ? ` · 🔥${streak}` : ''}`));
+      top.append(pips, h('div', 'pill panel', `<span>${scoreTxt()}</span>`));
       const timer = h('div', 'timer'); const bar = h('i'); timer.append(bar);
       const qbox = h('div', 'qbox');
       if (q.img) { const im = h('img', 'qimg'); im.src = q.img; im.alt = ''; qbox.append(im); }
-      qbox.append(h('div', 'qtxt', `<small>¡Salón, pónganse de acuerdo!</small>${q.q}`));
+      qbox.append(h('div', 'qtxt panel', `<small>¡Salón, pónganse de acuerdo!</small><span class="t">${q.q}</span>`));
       const opts = h('div', 'opts');
       q.opts.forEach((o, i) => {
-        const b = h('button', 'opt', `<span class="ltr">${LETTERS[i]}</span><span>${o}</span>`);
+        const b = h('button', 'opt panel', `<span class="ltr">${LETTERS[i]}</span><span class="txt">${o}</span>`);
         b.onclick = e => { e.stopPropagation(); pick(i); };
         opts.append(b);
       });
@@ -114,10 +116,10 @@ window.Quiz = (() => {
       let msg, cls;
       if (ok) { streak++; const pts = 100 + (streak > 1 ? 50 : 0); score += pts; msg = `¡CORRECTO! +${pts}`; cls = 'ok'; sfx.ok(); }
       else { streak = 0; if (i >= 0) btns[i].classList.add('wrong'); msg = i < 0 ? '¡SE ACABÓ EL TIEMPO!' : '¡UY! CASI'; cls = i < 0 ? 'time' : 'no'; sfx.no(); }
-      u.fb.className = 'fb on ' + cls; u.fb.innerHTML = `<div class="msg">${msg}</div>`;
+      u.fb.className = 'fb on ' + cls; u.fb.innerHTML = `<div class="msg panel"><span>${msg}</span></div>`;
       setTimeout(() => u.fb.classList.remove('on'), 1500);
       u.next.classList.add('on');
-      const nowPill = play.querySelector('.top .pill:last-child'); if (nowPill) nowPill.textContent = `⭐ ${score}${streak > 1 ? ` · 🔥${streak}` : ''}`;
+      const nowPill = play.querySelector('.top .pill:last-child'); if (nowPill) nowPill.firstChild.textContent = scoreTxt();
       const pipEls = play.querySelectorAll('.pip'); pipEls[idx].className = 'pip ' + (ok ? 'ok' : 'bad');
     }
 
@@ -128,7 +130,7 @@ window.Quiz = (() => {
       const sub = stars === 3 ? 'Respondieron todo bien. ¡Cero errores!' : `Acertaron ${good} de ${qs.length} preguntas.`;
       end.innerHTML = `
         <h1>${title}</h1>
-        <div class="stars">${[0, 1, 2].map(i => `<span class="${i < stars ? '' : 'off'}">⭐</span>`).join('')}</div>
+        <div class="stars">${[0, 1, 2].map(i => STAR(i < stars)).join('')}</div>
         <div class="final-score">${score} puntos</div>
         <div class="sub">${sub}</div>
         <div class="row">
