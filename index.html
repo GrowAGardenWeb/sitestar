@@ -70,6 +70,20 @@ body.playing #play{display:none}
   body.rot #deck{width:min(100dvh,calc(100dvw*16/9));border-radius:0}
 }
 
+/* --- pantalla de carga --- */
+#loader{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.2%;background:radial-gradient(120% 120% at 50% 40%,#1b2a66 0%,#0b1020 70%);opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
+#loader.on{opacity:1;visibility:visible}
+#loader .logo{width:min(14vh,14vw);aspect-ratio:1;border-radius:18%;background:#fff;display:grid;place-items:center;transform:rotate(15deg);animation:lspin 1.6s ease-in-out infinite;box-shadow:0 0 40px rgba(76,195,255,.55)}
+#loader .logo::after{content:"";width:34%;height:34%;background:#0b1020;border-radius:12%}
+@keyframes lspin{0%{transform:rotate(15deg) scale(1)}50%{transform:rotate(195deg) scale(1.12)}100%{transform:rotate(375deg) scale(1)}}
+#loader h2{font-size:min(3.4vh,3.4vw);font-weight:800;text-align:center;padding:0 6%;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+#loader small{display:block;margin-top:.5em;font-size:.6em;font-weight:600;opacity:.7;letter-spacing:.15em}
+#loader .track{width:min(46vh,46vw);height:min(1.6vh,1.6vw);border-radius:99px;background:rgba(255,255,255,.15);overflow:hidden}
+#loader .fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#4cc3ff,#2f5bff)}
+#loader.on .fill{animation:lfill 2s cubic-bezier(.4,.1,.3,1) forwards}
+@keyframes lfill{0%{width:0}35%{width:40%}60%{width:62%}100%{width:100%}}
+#loader p{font-size:min(2.2vh,2.2vw);opacity:.8}
+#confetti{position:absolute;inset:0;width:100%;height:100%;z-index:40;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.slide *,.slide{animation-duration:.01s!important}#play{animation:none}}
 </style>
 </head>
@@ -77,6 +91,8 @@ body.playing #play{display:none}
 <div id="bg"></div>
 <main id="stage">
 <div id="deck" aria-live="polite"></div>
+<canvas id="confetti"></canvas>
+<div id="loader" aria-live="polite"><div class="logo"></div><h2>Recursos Visuales y gráficos<small>EQUIPO5</small></h2><div class="track"><div class="fill"></div></div><p id="tip">Cargando…</p></div>
 </main>
 
 <script>
@@ -112,6 +128,37 @@ body.playing #play{display:none}
   slides[TOTAL - 1].appendChild(gato);
   const showGato = () => { if (!gato.src) gato.src = 'img/gato.webp'; gato.classList.add('show'); };
 
+  // confeti
+  const cv = document.getElementById('confetti'), cx = cv.getContext('2d');
+  let parts = [], raf = 0, until = 0;
+  const COLORS = ['#ff4d4d', '#ffd23f', '#3ddc84', '#4cc3ff', '#2f5bff', '#b36bff', '#ff7ac8', '#ff9f1c'];
+  function fitCanvas() { const r = cv.getBoundingClientRect(); const d = Math.min(devicePixelRatio || 1, 2); cv.width = (cv.offsetWidth || 1) * d; cv.height = (cv.offsetHeight || 1) * d; cv._d = d; }
+  function burst(x, y, n, spread) {
+    const W = cv.width;
+    for (let i = 0; i < n; i++) {
+      const a = -Math.PI / 2 + (Math.random() - .5) * spread, v = (6 + Math.random() * 11) * cv._d * W / 1500;
+      parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: .22 * cv._d * W / 1500, w: (6 + Math.random() * 8) * cv._d * W / 1500, h: (4 + Math.random() * 6) * cv._d * W / 1500,
+        r: Math.random() * 6.28, vr: (Math.random() - .5) * .4, c: COLORS[i % COLORS.length], life: 0 });
+    }
+  }
+  function tick(t) {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    parts = parts.filter(p => p.y < cv.height + 40 && p.life < 360);
+    for (const p of parts) {
+      p.vy += p.g; p.vx *= .992; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life++;
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.globalAlpha = Math.min(1, (360 - p.life) / 60);
+      cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); cx.restore();
+    }
+    if (parts.length || t < until) raf = requestAnimationFrame(tick); else { raf = 0; cx.clearRect(0, 0, cv.width, cv.height); }
+  }
+  function confetti() {
+    fitCanvas(); const W = cv.width, H = cv.height;
+    until = performance.now() + 3200;
+    const waves = [[.15, 1.05], [.85, 1.05], [.5, 1.1], [.3, 1.05], [.7, 1.05], [.5, 1.1]];
+    waves.forEach((w, i) => setTimeout(() => { if (cur === TOTAL - 1) burst(W * w[0], H * w[1], 70, 1.3); }, 900 + i * 450));
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+
   slides[0].classList.add('active');
   bg.style.backgroundImage = 'url(img/1.webp)';
   // precargar el resto
@@ -134,7 +181,7 @@ body.playing #play{display:none}
     const im = inn.querySelector('img'); im.classList.remove('kb'); void im.offsetWidth; im.classList.add('kb');
     cur = n; ui();
     if (cur >= TOTAL - 3 && !gato.src) gato.src = 'img/gato.webp';
-    if (cur === TOTAL - 1) showGato();
+    if (cur === TOTAL - 1) { showGato(); confetti(); }
     setTimeout(() => {
       out.classList.remove('leaving', 'out');
       inn.classList.remove('in');
@@ -147,10 +194,20 @@ body.playing #play{display:none}
 
   function start() {
     if (started) return;
-    started = true;
+    started = true; busy = true;
     document.body.classList.add('playing');
     enterFull();
-    go(1, 'fwd');
+    const loader = document.getElementById('loader'), tip = document.getElementById('tip');
+    const tips = ['Cargando…', 'Preparando recursos…', 'Casi listo…'];
+    loader.classList.add('on');
+    let t = 0; tip.textContent = tips[0];
+    const iv = setInterval(() => { tip.textContent = tips[Math.min(++t, tips.length - 1)]; }, 700);
+    setTimeout(() => {
+      clearInterval(iv);
+      loader.classList.remove('on');
+      busy = false;
+      setTimeout(() => go(1, 'fwd'), 250);
+    }, 2300);
   }
   play.onclick = e => { e.stopPropagation(); start(); };
 
