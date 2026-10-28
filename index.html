@@ -59,6 +59,10 @@ html,body{height:100%;background:var(--ink);overflow:hidden;font-family:system-u
 #play:focus-visible{outline:3px solid #fff;outline-offset:4px}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(47,91,255,.7)}60%{box-shadow:0 0 0 1.6vw rgba(47,91,255,0)}}
 body.playing #play{display:none}
+#gato{position:absolute;top:.8%;right:1.2%;height:15.5%;width:auto;aspect-ratio:9/16;object-fit:cover;border-radius:10%;border:.35vw solid #fff;box-shadow:0 .6vw 1.8vw rgba(0,0,0,.45);z-index:5;pointer-events:none;opacity:0;transform:scale(0) rotate(-25deg)}
+.slide.active #gato.show{animation:pop .7s 1s cubic-bezier(.3,1.6,.5,1) forwards,wob 2.4s 1.8s ease-in-out infinite}
+@keyframes pop{to{opacity:1;transform:scale(1) rotate(6deg)}}
+@keyframes wob{0%,100%{transform:rotate(6deg) scale(1);opacity:1}50%{transform:rotate(-6deg) scale(1.08);opacity:1}}
 
 /* --- pantalla completa "forzada" en móvil vertical: gira la presentación 90° --- */
 @media (orientation:portrait){
@@ -102,6 +106,12 @@ body.playing #play{display:none}
   play.id = 'play'; play.setAttribute('aria-label', 'Jugar: iniciar la presentación');
   slides[0].appendChild(play);
 
+  // gif sorpresa en la última diapositiva
+  const gato = document.createElement('img');
+  gato.id = 'gato'; gato.alt = ''; gato.decoding = 'async';
+  slides[TOTAL - 1].appendChild(gato);
+  const showGato = () => { if (!gato.src) gato.src = 'img/gato.webp'; gato.classList.add('show'); };
+
   slides[0].classList.add('active');
   bg.style.backgroundImage = 'url(img/1.webp)';
   // precargar el resto
@@ -123,6 +133,8 @@ body.playing #play{display:none}
     // reiniciar animación kenburns
     const im = inn.querySelector('img'); im.classList.remove('kb'); void im.offsetWidth; im.classList.add('kb');
     cur = n; ui();
+    if (cur >= TOTAL - 3 && !gato.src) gato.src = 'img/gato.webp';
+    if (cur === TOTAL - 1) showGato();
     setTimeout(() => {
       out.classList.remove('leaving', 'out');
       inn.classList.remove('in');
