@@ -117,7 +117,7 @@ body.playing #play{display:none}
       g.className = 'slide';
       deck.appendChild(g);
       GAME = slides.length; slides.push(g); bgs.push('img/fondo.webp');
-      quiz = Quiz.create(g, { onBack: () => go(GAME - 1, 'back'), onFinish: () => go(GAME + 1, 'fwd'), onWin: () => confetti() });
+      quiz = Quiz.create(g, { onBack: () => go(GAME - 1, 'back'), onFinish: () => go(GAME + 1, 'fwd'), onWin: () => confetti(false) });
     }
     const s = document.createElement('div');
     s.className = 'slide';
@@ -144,15 +144,15 @@ body.playing #play{display:none}
 
   // confeti
   const cv = document.getElementById('confetti'), cx = cv.getContext('2d');
-  let parts = [], raf = 0, until = 0;
+  let parts = [], raf = 0, until = 0, rainUntil = 0, fx = [];
   const COLORS = ['#ff4d4d', '#ffd23f', '#3ddc84', '#4cc3ff', '#2f5bff', '#b36bff', '#ff7ac8', '#ff9f1c'];
   function fitCanvas() { const r = cv.getBoundingClientRect(); const d = Math.min(devicePixelRatio || 1, 2); cv.width = (cv.offsetWidth || 1) * d; cv.height = (cv.offsetHeight || 1) * d; cv._d = d; }
-  function burst(x, y, n, spread) {
+  function burst(x, y, n, spread, base = -Math.PI / 2, power = 1) {
     const W = cv.width;
     for (let i = 0; i < n; i++) {
-      const a = -Math.PI / 2 + (Math.random() - .5) * spread, v = (6 + Math.random() * 11) * cv._d * W / 1500;
+      const a = base + (Math.random() - .5) * spread, v = (6 + Math.random() * 11) * power * cv._d * W / 1500;
       parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: .22 * cv._d * W / 1500, w: (6 + Math.random() * 8) * cv._d * W / 1500, h: (4 + Math.random() * 6) * cv._d * W / 1500,
-        r: Math.random() * 6.28, vr: (Math.random() - .5) * .4, c: COLORS[i % COLORS.length], life: 0 });
+        r: Math.random() * 6.28, vr: (Math.random() - .5) * .4, c: COLORS[Math.floor(Math.random() * COLORS.length)], life: 0 });
     }
   }
   function tick(t) {
@@ -163,14 +163,76 @@ body.playing #play{display:none}
       cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.globalAlpha = Math.min(1, (360 - p.life) / 60);
       cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); cx.restore();
     }
+    if (t < rainUntil) rain(3);
     if (parts.length || t < until) raf = requestAnimationFrame(tick); else { raf = 0; cx.clearRect(0, 0, cv.width, cv.height); }
   }
-  function confetti() {
+  // lluvia de confeti desde arriba
+  function rain(n) {
+    const W = cv.width, d = cv._d;
+    for (let i = 0; i < n; i++) parts.push({ x: Math.random() * W, y: -10 * d, vx: (Math.random() - .5) * 2 * d, vy: (1 + Math.random() * 3) * d, g: .03 * d, w: (6 + Math.random() * 8) * d * W / 1500, h: (4 + Math.random() * 6) * d * W / 1500,
+      r: Math.random() * 6.28, vr: (Math.random() - .5) * .3, c: COLORS[Math.floor(Math.random() * COLORS.length)], life: 0 });
+  }
+  const later = (fn, ms) => { const t = setTimeout(fn, ms); fx.push(t); };
+  function confetti(big) {
     fitCanvas(); const W = cv.width, H = cv.height;
-    until = performance.now() + 3200;
-    const waves = [[.15, 1.05], [.85, 1.05], [.5, 1.1], [.3, 1.05], [.7, 1.05], [.5, 1.1]];
-    waves.forEach((w, i) => setTimeout(() => { if (cur === TOTAL - 1 || cur === GAME) burst(W * w[0], H * w[1], 70, 1.3); }, 900 + i * 450));
+    const alive = () => cur === TOTAL - 1 || cur === GAME;
+    if (!big) {
+      until = performance.now() + 3200;
+      [[.15, 1.05], [.85, 1.05], [.5, 1.1], [.3, 1.05], [.7, 1.05], [.5, 1.1]].forEach((w, i) => later(() => { if (alive()) burst(W * w[0], H * w[1], 70, 1.3); }, 900 + i * 450));
+    } else {
+      // gran final: cañones desde las esquinas y el centro + lluvia constante
+      const DUR = 9000; until = performance.now() + DUR + 2500; rainUntil = performance.now() + DUR + 800;
+      for (let i = 0; i < 16; i++) later(() => {
+        if (!alive()) return;
+        burst(0, H, 60, .7, -Math.PI / 2 + .55, 1.25);            // cañón izquierdo hacia la derecha
+        burst(W, H, 60, .7, -Math.PI / 2 - .55, 1.25);            // cañón derecho hacia la izquierda
+        if (i % 2 === 0) burst(W * (.25 + Math.random() * .5), H * 1.05, 70, 1.5, -Math.PI / 2, 1.1);
+      }, 700 + i * 520);
+    }
     if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function stopFinale() { fx.forEach(clearTimeout); fx = []; rainUntil = 0; stopApplause(); }
+
+  // aplausos sintetizados (ruido filtrado en muchas palmadas cortas) — sin archivos de audio
+  let actx, master;
+  function unlockAudio() {
+    try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) {}
+  }
+  function applause(dur = 8) {
+    unlockAudio(); if (!actx) return;
+    stopApplause();
+    const t0 = actx.currentTime + .05;
+    master = actx.createGain(); master.gain.value = 1; master.connect(actx.destination);
+    const len = actx.sampleRate * 1;
+    const buf = actx.createBuffer(1, len, actx.sampleRate), data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    const env = t => { // sube rápido, se mantiene, y baja al final
+      const x = t / dur; return x < .08 ? x / .08 : x > .72 ? Math.max(0, 1 - (x - .72) / .28) : 1; };
+    // fondo continuo de público
+    const wash = actx.createBufferSource(); wash.buffer = buf; wash.loop = true;
+    const wf = actx.createBiquadFilter(); wf.type = 'bandpass'; wf.frequency.value = 1800; wf.Q.value = .5;
+    const wg = actx.createGain(); wg.gain.setValueAtTime(0, t0);
+    for (let k = 0; k <= 20; k++) wg.gain.linearRampToValueAtTime(.22 * env(k / 20 * dur), t0 + k / 20 * dur);
+    wash.connect(wf); wf.connect(wg); wg.connect(master); wash.start(t0); wash.stop(t0 + dur + .1);
+    // palmadas sueltas
+    const N = 320;
+    for (let i = 0; i < N; i++) {
+      const t = Math.random() * dur, e = env(t);
+      if (Math.random() > e) continue;
+      const src = actx.createBufferSource(); src.buffer = buf;
+      const f = actx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 900 + Math.random() * 2600; f.Q.value = .8 + Math.random() * 1.5;
+      const g = actx.createGain(), at = t0 + t, d = .03 + Math.random() * .05;
+      g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(.35 + Math.random() * .5, at + .004); g.gain.exponentialRampToValueAtTime(.001, at + d);
+      let node = g;
+      if (actx.createStereoPanner) { const p = actx.createStereoPanner(); p.pan.value = Math.random() * 2 - 1; g.connect(p); node = p; }
+      src.connect(f); f.connect(g); node.connect(master);
+      src.start(at, Math.random() * .8, d + .02);
+    }
+  }
+  function stopApplause() {
+    if (!master) return;
+    try { master.gain.cancelScheduledValues(actx.currentTime); master.gain.setValueAtTime(master.gain.value, actx.currentTime); master.gain.linearRampToValueAtTime(0, actx.currentTime + .4); } catch (e) {}
+    master = null;
   }
 
   slides[0].classList.add('active');
@@ -196,7 +258,8 @@ body.playing #play{display:none}
     cur = n; ui();
     if (cur >= TOTAL - 3 && !gato.src) gato.src = 'img/gato.webp';
     if (cur === GAME) { stopAuto(); quiz.reset(); } else quiz.stop();
-    if (cur === TOTAL - 1) { showGato(); confetti(); }
+    if (cur !== TOTAL - 1) stopFinale();
+    if (cur === TOTAL - 1) { showGato(); confetti(true); applause(8); }
     setTimeout(() => {
       out.classList.remove('leaving', 'out');
       inn.classList.remove('in');
@@ -210,6 +273,7 @@ body.playing #play{display:none}
   function start() {
     if (started) return;
     started = true; busy = true;
+    unlockAudio();
     document.body.classList.add('playing');
     enterFull();
     const loader = document.getElementById('loader'), tip = document.getElementById('tip');
