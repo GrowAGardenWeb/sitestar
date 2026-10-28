@@ -87,6 +87,7 @@ body.playing #play{display:none}
 #confetti{position:absolute;inset:0;width:100%;height:100%;z-index:40;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.slide *,.slide{animation-duration:.01s!important}#play{animation:none}}
 </style>
+<link rel="stylesheet" href="quiz.css">
 </head>
 <body>
 <div id="bg"></div>
@@ -98,17 +99,26 @@ body.playing #play{display:none}
 <div class="join"><span class="spin"></span><span id="tip">Uniéndose al servidor</span></div></div>
 </main>
 
+<script src="quiz.js"></script>
 <script>
 (() => {
-  const TOTAL = 8;
-  const EFFECTS = ['zoom','slide','flip','rise','wipe','spin','fade','slide']; // efecto de entrada por diapositiva
+  const IMGS = 8;
+  const EFFECTS = ['zoom','slide','flip','rise','wipe','spin','rise','fade','slide']; // efecto de entrada por diapositiva
   const deck = document.getElementById('deck');
   const bg = document.getElementById('bg');
-  const slides = [];
+  const slides = [], bgs = [];
+  let GAME = -1, quiz;
   let cur = 0, started = false, busy = false, timer = null, autoOn = false;
 
   // construir diapositivas
-  for (let i = 1; i <= TOTAL; i++) {
+  for (let i = 1; i <= IMGS; i++) {
+    if (i === IMGS) { // minijuego antes de la diapositiva final
+      const g = document.createElement('div');
+      g.className = 'slide';
+      deck.appendChild(g);
+      GAME = slides.length; slides.push(g); bgs.push('img/fondo.webp');
+      quiz = Quiz.create(g, { onBack: () => go(GAME - 1, 'back'), onFinish: () => go(GAME + 1, 'fwd'), onWin: () => confetti() });
+    }
     const s = document.createElement('div');
     s.className = 'slide';
     const img = document.createElement('img');
@@ -118,8 +128,9 @@ body.playing #play{display:none}
     if (i > 2) img.loading = 'lazy';
     s.appendChild(img);
     deck.appendChild(s);
-    slides.push(s);
+    slides.push(s); bgs.push(`img/${i}.webp`);
   }
+  const TOTAL = slides.length;
   // botón JUGAR sobre la portada
   const play = document.createElement('button');
   play.id = 'play'; play.setAttribute('aria-label', 'Jugar: iniciar la presentación');
@@ -158,17 +169,17 @@ body.playing #play{display:none}
     fitCanvas(); const W = cv.width, H = cv.height;
     until = performance.now() + 3200;
     const waves = [[.15, 1.05], [.85, 1.05], [.5, 1.1], [.3, 1.05], [.7, 1.05], [.5, 1.1]];
-    waves.forEach((w, i) => setTimeout(() => { if (cur === TOTAL - 1) burst(W * w[0], H * w[1], 70, 1.3); }, 900 + i * 450));
+    waves.forEach((w, i) => setTimeout(() => { if (cur === TOTAL - 1 || cur === GAME) burst(W * w[0], H * w[1], 70, 1.3); }, 900 + i * 450));
     if (!raf) raf = requestAnimationFrame(tick);
   }
 
   slides[0].classList.add('active');
   bg.style.backgroundImage = 'url(img/1.webp)';
   // precargar el resto
-  for (let i = 2; i <= TOTAL; i++) { const p = new Image(); p.src = `img/${i}.webp`; }
+  for (let i = 2; i <= IMGS; i++) { const p = new Image(); p.src = `img/${i}.webp`; }
 
   function ui() {
-    bg.style.backgroundImage = `url(img/${cur + 1}.webp)`;
+    bg.style.backgroundImage = `url(${bgs[cur]})`;
   }
 
   function go(n, dir) {
@@ -181,16 +192,17 @@ body.playing #play{display:none}
     out.classList.remove('active'); out.classList.add('leaving', 'out');
     inn.classList.add('active', 'in');
     // reiniciar animación kenburns
-    const im = inn.querySelector('img'); im.classList.remove('kb'); void im.offsetWidth; im.classList.add('kb');
+    const im = inn.querySelector(':scope > img'); if (im) { im.classList.remove('kb'); void im.offsetWidth; im.classList.add('kb'); }
     cur = n; ui();
     if (cur >= TOTAL - 3 && !gato.src) gato.src = 'img/gato.webp';
+    if (cur === GAME) { stopAuto(); quiz.reset(); } else quiz.stop();
     if (cur === TOTAL - 1) { showGato(); confetti(); }
     setTimeout(() => {
       out.classList.remove('leaving', 'out');
       inn.classList.remove('in');
       busy = false;
     }, 1000);
-    if (autoOn) schedule();
+    if (autoOn && cur !== GAME) schedule();
   }
   const next = () => cur < TOTAL - 1 ? go(cur + 1, 'fwd') : (stopAuto(), go(0, 'back'));
   const prev = () => go(cur - 1, 'back');
@@ -245,6 +257,7 @@ body.playing #play{display:none}
   addEventListener('keydown', e => {
     if (!started) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); start(); } return; }
     const k = e.key;
+    if (cur === GAME) { if (quiz.key(k)) e.preventDefault(); return; }
     if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') { e.preventDefault(); stopAuto(); next(); }
     else if (k === 'ArrowLeft' || k === 'PageUp') { stopAuto(); prev(); }
     else if (k === 'Home') { stopAuto(); go(0, 'back'); }
@@ -254,7 +267,7 @@ body.playing #play{display:none}
   });
   // clic en la diapositiva = siguiente (mitad izquierda = anterior)
   deck.addEventListener('click', e => {
-    if (!started) return;
+    if (!started || cur === GAME) return;
     const r = deck.getBoundingClientRect();
     const rotated = document.body.classList.contains('rot') && matchMedia('(orientation:portrait)').matches;
     const frac = rotated ? (e.clientY - r.top) / r.height : (e.clientX - r.left) / r.width;
@@ -265,7 +278,7 @@ body.playing #play{display:none}
   let sx = 0, sy = 0;
   addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
   addEventListener('touchend', e => {
-    if (!started) return;
+    if (!started || cur === GAME) return;
     let dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
     if (document.body.classList.contains('rot') && matchMedia('(orientation:portrait)').matches) [dx, dy] = [dy, -dx];
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) { stopAuto(); dx < 0 ? next() : prev(); }
