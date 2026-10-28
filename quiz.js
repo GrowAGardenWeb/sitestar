@@ -1,7 +1,7 @@
 /* Minijuego "El salón vs el Quiz".
    El presentador maneja el juego: el salón responde en voz alta o con los dedos (1-4) y el presentador toca la respuesta. */
 window.Quiz = (() => {
-  const SECONDS = 20;
+  const SECONDS = 40;
   const QUESTIONS = [
     { img: 'img/q-senal.webp', q: '¿Qué tipo de recurso es este?', a: 'Señal o pictograma',
       w: ['Folleto o tríptico', 'Infografía', 'Presentación digital'] },
