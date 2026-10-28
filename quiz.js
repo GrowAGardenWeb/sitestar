@@ -79,7 +79,7 @@ window.Quiz = (() => {
       const timer = h('div', 'timer'); const bar = h('i'); timer.append(bar);
       const qbox = h('div', 'qbox');
       if (q.img) { const im = h('img', 'qimg'); im.src = q.img; im.alt = ''; qbox.append(im); }
-      qbox.append(h('div', 'qtxt panel', `<small>¡Salón, pónganse de acuerdo!</small><span class="t">${q.q}</span>`));
+      qbox.append(h('div', 'qtxt panel', `<small>¡Respondan todos juntos!</small><span class="t">${q.q}</span>`));
       const opts = h('div', 'opts');
       q.opts.forEach((o, i) => {
         const b = h('button', 'opt panel', `<span class="ltr">${LETTERS[i]}</span><span class="txt">${o}</span>`);

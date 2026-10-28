@@ -4,7 +4,7 @@
 
 .quiz{--navy:#0a1f5c;--blue:#2f8fff;--green:#35d36b;--red:#ff4d4d;--yellow:#ffc400;
   position:absolute;inset:0;container-type:size;overflow:hidden;color:#fff;font-family:"Lilita One","Arial Rounded MT Bold",system-ui,sans-serif;user-select:none;
-  background:linear-gradient(rgba(5,10,30,.3),rgba(5,10,30,.3)),url(img/fondo-juego.webp) center/cover}
+  background:linear-gradient(rgba(5,10,30,.38),rgba(5,10,30,.38)),url(img/fondo-juego.webp) center/cover}
 .quiz .scr{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 6cqw}
 .quiz .scr.on{display:flex;animation:qIn .35s ease-out both}
 @keyframes qIn{from{opacity:0;transform:translateY(2cqw)}to{opacity:1;transform:none}}
